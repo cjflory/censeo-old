@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <div class="jumbotron">
+    <h1>
+      Welcome to Censeo
+      {% include 'censeo/img/coffee.html' with classes='pull-right coffee-img' %}
+    </h1>
+    <p>
+      Censeo is a small app designed to streamline your team's
+      <a href="http://en.wikipedia.org/wiki/Planning_poker">planning poker</a>
+      meetings. Check out our <a href="#">quick start</a> guide for a quick
+      introduction to how Censeo works. Please report any bugs or suggestions.
+    </p>
+    <p>
+      <a href="{% url 'meet' %}" class="btn btn-primary" role="button">
+        Take me to the meeting!
+      </a>
+    </p>
+  </div>
+
+{% endblock %}

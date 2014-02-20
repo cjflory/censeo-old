@@ -1,0 +1,18 @@
+{% extends "registration/registration_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans ' - Logged out' %}{% endblock %}
+
+{% block content %}
+  {% url 'login' as login_url %}
+
+  <div class="well primary-header">
+    <h2>{% trans 'Logged Out' %}</h2>
+  </div>
+
+  <p>
+    {% blocktrans %}
+      You have been logged out of your account. <a href="{{ login_url }}">Log in again</a>
+    {% endblocktrans %}
+  </p>
+{% endblock %}

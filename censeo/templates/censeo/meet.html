@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load compressed %}
+
+{% block title %}Meeting{% endblock %}
+
+{% block content %}
+  <div class="well primary-header">
+    <h2>
+      {{ meeting.start|date:DATE_FORMAT.LONG }}
+      <span class="panel pull-right" id="meetingId"
+            data-meeting-id="{{ meeting.id }}">
+        {{ meeting.id }}
+      </span>
+      <span class="clearfix"></span>
+    </h2>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Tickets</h3>
+        </div>
+        <div id="tickets" class="panel-body">
+          {% include 'censeo/snippets/tickets.html' %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Vote<span id="voting-on" class="pull-right"></span></h3>
+        </div>
+        <div id="voting" class="panel-body">
+          <div class="default">Select a ticket to vote on</div>
+          <ul class="simple-list vote-options hide">
+            <li class="vote-option">
+              <button type="button" class="btn btn-sm btn-primary" data-value="0">0</button>
+            </li>
+            <li class="vote-option">
+              <button type="button" class="btn btn-sm btn-primary" data-value=".5">1/2</button>
+            </li>
+            <li class="vote-option">
+              <button type="button" class="btn btn-sm btn-primary" data-value="1">1</button>
+            </li>
+            <li class="vote-option">
+              <button type="button" class="btn btn-sm btn-primary" data-value="2">2</button>
+            </li>
+            <li class="vote-option">
+              <button type="button" class="btn btn-sm btn-primary" data-value="3">3</button>
+            </li>
+            <li class="vote-option">
+              <button type="button" class="btn btn-sm btn-primary" data-value="5">5</button>
+            </li>
+            <li class="vote-option">
+              <button type="button" class="btn btn-sm btn-primary" data-value="8">8</button>
+            </li>
+            <li class="vote-option">
+              <button type="button" class="btn btn-sm btn-primary" data-value="13">13</button>
+            </li>
+            <li class="vote-option">
+              <button type="button" class="btn btn-sm btn-primary" data-value="20">20</button>
+            </li>
+            <li class="vote-option">
+              <button type="button" class="btn btn-sm btn-primary" data-value="40">40</button>
+            </li>
+            <li class="vote-option">
+              <button type="button" class="btn btn-sm btn-primary" data-value="100">100</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Users</h3>
+        </div>
+        <div id="users" class="panel-body">
+          {% include 'censeo/snippets/users.html' with users=meeting.voters.all %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block js %}
+  {{ block.super }}
+  {% compressed_js 'meet' %}
+{% endblock %}

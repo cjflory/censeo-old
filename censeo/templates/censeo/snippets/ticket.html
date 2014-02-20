@@ -1,0 +1,11 @@
+{% if errors %}
+  {% for field, error in errors.items %}
+    <li class="error">{{ error }}</li>
+  {% endfor %}
+{% else %}
+  <li class="ticket">
+    <button data-ticket-id="{{ ticket.id }}" type="button" class="btn btn-default btn-sm">
+      {{ ticket.id }}
+    </button>
+  </li>
+{% endif %}

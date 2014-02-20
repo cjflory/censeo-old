@@ -1,0 +1,7 @@
+*.pyc
+db.sqlite3
+collected_static/
+censeo/static/censeo/less/*.css
+censeo/management/commands/refresh_db.py
+# Temporary
+censeo/migrations

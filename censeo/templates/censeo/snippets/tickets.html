@@ -1,0 +1,16 @@
+<ul class="simple-list ticket-list">
+  {% for ticket in meeting.tickets.all %}
+    {% include 'censeo/snippets/ticket.html' %}
+  {% endfor %}
+</ul>
+<form action="{% url 'add_ticket' %}" method="post" id="addTicket" class="add-ticket-form">
+  <div class="input-group">
+    <input type="text" class="form-control" placeholder="Add Ticket" id="addTicketInput" name="id" />
+    <input type="hidden" name="meeting" value="{{ meeting.id }}" />
+    <span class="input-group-btn">
+      <button class="btn btn-default" type="submit">
+        <i class="glyphicon glyphicon-plus"></i>
+      </button>
+    </span>
+  </div>
+</form>
