@@ -1,4 +1,5 @@
 *.pyc
 db.sqlite3
 collected_static/
+node_modules/
 censeo/static/censeo/less/*.css
