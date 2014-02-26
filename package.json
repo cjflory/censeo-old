@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "less": "1.5.x",
+    "yuglify": "0.1.x"
+  }
+}

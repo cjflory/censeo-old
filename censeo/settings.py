@@ -73,6 +73,8 @@ STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yuglify.YuglifyCompressor'
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yuglify.YuglifyCompressor'
 PIPELINE_COMPILERS = ('pipeline.compilers.less.LessCompiler',)
+PIPELINE_YUGLIFY_BINARY = os.path.join(BASE_DIR, 'node_modules/.bin/yuglify')
+PIPELINE_LESS_BINARY = os.path.join(BASE_DIR, 'node_modules/.bin/lessc')
 PIPELINE_CSS = {
     'base': {
         'source_filenames': (
