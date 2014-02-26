@@ -1,5 +1,11 @@
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+
+from django.core.urlresolvers import reverse_lazy
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os, sys
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 SECRET_KEY = os.environ["SECRET_KEY"]
@@ -99,7 +105,7 @@ PIPELINE_JS = {
 }
 
 # Registration
-LOGIN_REDIRECT_URL = '/meet/'
+LOGIN_REDIRECT_URL = reverse_lazy('meet')
 ACCOUNT_ACTIVATION_DAYS = 3
 
 if 'runserver' in sys.argv:

@@ -2,7 +2,6 @@
 
 from django.db import models
 from django.utils import timezone
-from django.utils.timezone import utc
 
 from dateutil.relativedelta import relativedelta
 

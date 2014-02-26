@@ -7,7 +7,7 @@
         <span class="badge pull-right">
           {% if all_voted %} {# Everyone has voted #}
             {{ vote.get_story_point_display }}
-          {% else %} {# Not everyone has voted #}
+          {% else %} {# Not everyone has voted, current user has #}
             <i class="glyphicon glyphicon-ok"></i>
           {% endif %}
         </span>

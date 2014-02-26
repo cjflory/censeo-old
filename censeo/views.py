@@ -2,22 +2,19 @@
 
 import json
 
-from django.core import serializers
-from django.forms.models import model_to_dict
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.views.generic import FormView
 from django.views.generic import TemplateView
-from django.views.generic import View
 
 from .forms import AddTicketForm
-from .models import Meeting
-from .models import Ticket
-from .models import Vote
 from .mixins import AjaxRequiredMixin
 from .mixins import LoginRequiredMixin
 from .mixins import LoginRequiredNoRedirectMixin
+from .models import Meeting
+from .models import Ticket
+from .models import Vote
 
 
 class HomeView(TemplateView):
