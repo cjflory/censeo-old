@@ -1,5 +1,7 @@
+{% load censeo_tags %}
+
 <ul class="simple-list user-list">
   {% for user in users %}
-    {% include 'censeo/snippets/user.html' %}
+    <li class="user">{% get_full_name_or_username user %}</li>
   {% endfor %}
 </ul>

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load compressed %}
 
+
 {% block title %}Meeting{% endblock %}
 
 {% block content %}
@@ -21,53 +22,32 @@
         <div class="panel-heading">
           <h3 class="panel-title">Tickets</h3>
         </div>
-        <div id="tickets" class="panel-body">
-          {% include 'censeo/snippets/tickets.html' %}
+        <div class="panel-body">
+          <div id="tickets" data-poll-url="{% url 'poll_tickets' meeting.id %}">
+            {% include 'censeo/snippets/tickets.html' with tickets=meeting.tickets.all %}
+          </div>
+          <form action="{% url 'add_ticket' %}" method="post" id="addTicket" class="add-ticket-form">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Add Ticket" id="addTicketInput" name="id"
+                     autocomplete="off" />
+              <input type="hidden" name="meeting" value="{{ meeting.id }}" />
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">
+                  <i class="glyphicon glyphicon-plus"></i>
+                </button>
+              </span>
+            </div>
+          </form>
         </div>
       </div>
     </div>
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title">Vote<span id="voting-on" class="pull-right"></span></h3>
+          <h3 class="panel-title">Voting</h3>
         </div>
         <div id="voting" class="panel-body">
-          <div class="default">Select a ticket to vote on</div>
-          <ul class="simple-list vote-options hide">
-            <li class="vote-option">
-              <button type="button" class="btn btn-sm btn-primary" data-value="0">0</button>
-            </li>
-            <li class="vote-option">
-              <button type="button" class="btn btn-sm btn-primary" data-value=".5">1/2</button>
-            </li>
-            <li class="vote-option">
-              <button type="button" class="btn btn-sm btn-primary" data-value="1">1</button>
-            </li>
-            <li class="vote-option">
-              <button type="button" class="btn btn-sm btn-primary" data-value="2">2</button>
-            </li>
-            <li class="vote-option">
-              <button type="button" class="btn btn-sm btn-primary" data-value="3">3</button>
-            </li>
-            <li class="vote-option">
-              <button type="button" class="btn btn-sm btn-primary" data-value="5">5</button>
-            </li>
-            <li class="vote-option">
-              <button type="button" class="btn btn-sm btn-primary" data-value="8">8</button>
-            </li>
-            <li class="vote-option">
-              <button type="button" class="btn btn-sm btn-primary" data-value="13">13</button>
-            </li>
-            <li class="vote-option">
-              <button type="button" class="btn btn-sm btn-primary" data-value="20">20</button>
-            </li>
-            <li class="vote-option">
-              <button type="button" class="btn btn-sm btn-primary" data-value="40">40</button>
-            </li>
-            <li class="vote-option">
-              <button type="button" class="btn btn-sm btn-primary" data-value="100">100</button>
-            </li>
-          </ul>
+          {% include 'censeo/snippets/voting.html' %}
         </div>
       </div>
     </div>
@@ -76,7 +56,7 @@
         <div class="panel-heading">
           <h3 class="panel-title">Users</h3>
         </div>
-        <div id="users" class="panel-body">
+        <div id="users" class="panel-body" data-poll-url="{% url 'poll_users' meeting.id %}">
           {% include 'censeo/snippets/users.html' with users=meeting.voters.all %}
         </div>
       </div>
@@ -87,4 +67,11 @@
 {% block js %}
   {{ block.super }}
   {% compressed_js 'meet' %}
+  <script type="application/javascript">
+    (function () {
+      var censeo = window.censeo || (window.censeo = {});
+
+      censeo.defaultVotingHtml = '{{ DEFAULT_VOTING_HTML|safe }}';
+    }());
+  </script>
 {% endblock %}

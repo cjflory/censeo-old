@@ -13,7 +13,11 @@ from django.views.generic import View
 
 from .forms import AddTicketForm
 from .models import Meeting
-from .view_mixins import LoginRequiredMixin
+from .models import Ticket
+from .models import Vote
+from .mixins import AjaxRequiredMixin
+from .mixins import LoginRequiredMixin
+from .mixins import LoginRequiredNoRedirectMixin
 
 
 class HomeView(TemplateView):
@@ -32,7 +36,11 @@ class MeetView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class AddTicket(LoginRequiredMixin, FormView):
+class BaseAjaxView(LoginRequiredNoRedirectMixin, AjaxRequiredMixin):
+    pass
+
+
+class AddTicketView(BaseAjaxView, FormView):
     form_class = AddTicketForm
     template_name = 'censeo/snippets/ticket.html'
 
@@ -40,16 +48,94 @@ class AddTicket(LoginRequiredMixin, FormView):
         return HttpResponse(render_to_string(self.template_name, {'ticket': form.save()}))
 
     def form_invalid(self, form):
-        return HttpResponse(render_to_string(self.template_name, {'errors': form.errors}))
+        return HttpResponse(json.dumps({'errors': form.errors}), content_type="application/json")
 
 
-# class UpdateView(LoginRequiredMixin, View):
-#
-#     def get(self, request, *args, **kwargs):
-#         return HttpResponse(self.get_context_data(*args, **kwargs), mimetype='application/json')
-#
-#     def get_context_data(self, *args, **kwargs):
-#         meeting_id = kwargs.get('meeting_id', 0)
-#         meeting = get_object_or_404(Meeting, id=meeting_id)
-#         context = {'meeting': model_to_dict(meeting)}
-#         return json.dumps(context)
+class BasePollView(BaseAjaxView, TemplateView):
+    """ Base view for views that handle meeting polling """
+
+    def get_queryset(self, **kwargs):
+        meeting = get_object_or_404(Meeting, id=kwargs['meeting_id'])
+        return getattr(meeting, self.meeting_attr).all()
+
+    def get_context_data(self, **kwargs):
+        context = super(BasePollView, self).get_context_data(**kwargs)
+        context[self.context_key] = self.get_queryset(**kwargs)
+        return context
+
+
+class PollTicketsView(BasePollView):
+    template_name = 'censeo/snippets/tickets.html'
+    context_key = 'tickets'
+    meeting_attr = 'tickets'
+
+
+class PollUsersView(BasePollView):
+    template_name = 'censeo/snippets/users.html'
+    context_key = 'users'
+    meeting_attr = 'voters'
+
+
+class TicketVotingBaseView(BaseAjaxView, TemplateView):
+    template_name = 'censeo/snippets/voting.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(TicketVotingBaseView, self).get_context_data(**kwargs)
+        context['selected_ticket'] = get_object_or_404(Ticket, id=kwargs.get('ticket_id'))
+        return context
+
+    def get_vote_context(self, ticket):
+        vote_context = {}
+        all_votes = ticket.ticket_votes.all()
+
+        if ticket.is_voting_completed():
+            # Ticket has already been voted on
+            vote_context['votes'] = all_votes
+            vote_context['all_voted'] = True
+        elif ticket.has_user_voted(self.request.user):
+            # Ticket is currently being voted on
+            vote_context['votes'] = all_votes
+        else:
+            # Allow user to vote
+            vote_context['voting'] = True
+
+        return vote_context
+
+
+class GetTicketVotesView(TicketVotingBaseView):
+
+    def get_context_data(self, **kwargs):
+        context = super(GetTicketVotesView, self).get_context_data(**kwargs)
+        context.update(self.get_vote_context(context['selected_ticket']))
+        return context
+
+
+class VoteOnTicketView(TicketVotingBaseView):
+
+    def get_users_vote(self, **kwargs):
+        """ Get the users vote from the kwargs, and make sure it's valid """
+        try:
+            users_vote = float(kwargs['vote'])
+        except ValueError:
+            users_vote = None
+
+        return users_vote
+
+    def get_context_data(self, **kwargs):
+        context = super(VoteOnTicketView, self).get_context_data(**kwargs)
+
+        users_vote = self.get_users_vote(**kwargs)
+        if users_vote is None:
+            # Users vote is invalid, pretend user hasn't voted
+            context['voting'] = True
+        else:
+            # Users vote is valid
+            vote = Vote(
+                user=self.request.user,
+                ticket=context['selected_ticket'],  # validated with get_object_or_404
+                story_point=users_vote
+            )
+            vote.save()
+            context.update(self.get_vote_context(context['selected_ticket']))
+
+        return context

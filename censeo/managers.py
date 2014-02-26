@@ -13,7 +13,7 @@ class MeetingManager(models.Manager):
         now = timezone.now()
         min, max = now - relativedelta(hours=12), now + relativedelta(hours=12)
         meeting, created = self.get_or_create(start__range=(min, max))
-        if created:
+        if not meeting.voters.filter(username=user.username).first():
             meeting.voters.add(user)
 
         return meeting

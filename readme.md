@@ -1,4 +1,8 @@
 # Censeo
 
-A simple scrum poker app  
-_Still in development_
+A simple scrum poker app.
+
+
+#### TODO
+
+* Write tests

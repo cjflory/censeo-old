@@ -1,0 +1,29 @@
+{% load censeo_tags %}
+
+{% if votes %}
+  <ul class="simple-list vote-results user-list"{% if all_voted %} data-all-voted="true"{% endif %}>
+    {% for vote in votes %}
+      <li class="vote-result">
+        <span class="badge pull-right">
+          {% if all_voted %} {# Everyone has voted #}
+            {{ vote.get_story_point_display }}
+          {% else %} {# Not everyone has voted #}
+            <i class="glyphicon glyphicon-ok"></i>
+          {% endif %}
+        </span>
+        {% get_full_name_or_username vote.user %}
+      </li>
+    {% endfor %}
+  </ul>
+{% elif voting %} {# Allow user to vote #}
+  <ul class="simple-list vote-options">
+    {% for value, display in STORY_POINTS %}
+      <li class="vote-option">
+        <a href="{% url 'vote_on_ticket' selected_ticket.id value %}" data-value="{{ value }}"
+           class="btn btn-sm btn-primary">{{ display }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %} {# Default #}
+  {{ DEFAULT_VOTING_HTML|safe }}
+{% endif %}

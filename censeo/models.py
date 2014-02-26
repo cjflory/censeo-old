@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from decimal import Decimal
-
 from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
 from django.db import models
@@ -18,17 +16,17 @@ class Constants(object):
         LONG = 'l, N d, Y'
 
     STORY_POINTS = (
-        (Decimal(0), '0'),
-        (Decimal(.5), '1/2'),
-        (Decimal(1), '1'),
-        (Decimal(2), '2'),
-        (Decimal(3), '3'),
-        (Decimal(5), '5'),
-        (Decimal(8), '8'),
-        (Decimal(13), '13'),
-        (Decimal(20), '20'),
-        (Decimal(40), '40'),
-        (Decimal(100), '100'),
+        (0.0, '0'),
+        (0.5, '1/2'),
+        (1.0, '1'),
+        (2.0, '2'),
+        (3.0, '3'),
+        (5.0, '5'),
+        (8.0, '8'),
+        (13.0, '13'),
+        (20.0, '20'),
+        (40.0, '40'),
+        (100.0, '100'),
     )
 
 
@@ -55,24 +53,24 @@ class Meeting(models.Model):
 class Ticket(models.Model):
     id = models.CharField(max_length=100, primary_key=True)
     meeting = models.ForeignKey(Meeting, related_name='tickets')
-    story_point = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True,
-                                      choices=Constants.STORY_POINTS)
     start = models.DateTimeField(auto_now_add=True)
     end = models.DateTimeField(blank=True, null=True)
 
     def __unicode__(self):
         return u'{}'.format(self.id)
 
-    def save(self, *args, **kwargs):
-        super(Ticket, self).save(*args, **kwargs)
+    def is_voting_completed(self):
+        return self.ticket_votes.count() == self.meeting.voters.count()
+
+    def has_user_voted(self, user):
+        return self.ticket_votes.filter(user=user).exists()
 
 
 class Vote(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, related_name='user_votes')
     ticket = models.ForeignKey(Ticket, related_name='ticket_votes')
-    story_point = models.DecimalField(max_digits=5, decimal_places=2,
-                                      choices=Constants.STORY_POINTS)
+    story_point = models.FloatField(choices=Constants.STORY_POINTS)
 
     class Meta:
         unique_together = ('user', 'ticket')
