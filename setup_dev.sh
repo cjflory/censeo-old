@@ -39,7 +39,7 @@ else
     cdvirtualenv
 fi
 
-git clone git@github.com:cjflory/censeo.git src/$1
+git clone https://github.com/cjflory/censeo.git src/$1
 cd src/$1
 git remote rm origin
 echo export PYTHONPATH='$VIRTUAL_ENV'/src/$1 >> $VIRTUAL_ENV/bin/postactivate
