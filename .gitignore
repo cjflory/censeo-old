@@ -2,6 +2,3 @@
 db.sqlite3
 collected_static/
 censeo/static/censeo/less/*.css
-censeo/management/commands/db_reset.py
-# Temporary
-censeo/migrations
