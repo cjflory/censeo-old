@@ -2,9 +2,14 @@
 
 import json
 
+from django.contrib.auth import authenticate
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django.views.generic import CreateView
 from django.views.generic import FormView
 from django.views.generic import TemplateView
 
@@ -31,6 +36,22 @@ class MeetView(LoginRequiredMixin, TemplateView):
             'form': AddTicketForm(),
         })
         return context
+
+
+class RegisterNewUserView(CreateView):
+    form_class = UserCreationForm
+    template_name = 'registration/register_user.html'
+
+    def form_valid(self, form):
+        self.object = form.save()
+
+        authed_user = authenticate(username=form.cleaned_data['username'],
+                                   password=form.cleaned_data['password1'])
+        login(self.request, authed_user)
+        return super(RegisterNewUserView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('meet')
 
 
 class BaseAjaxView(LoginRequiredNoRedirectMixin, AjaxRequiredMixin):

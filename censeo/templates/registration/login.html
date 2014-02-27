@@ -5,6 +5,7 @@
 
 {% block content %}
   {% url 'password_reset' as password_reset %}
+  {% url 'register_new_user' as register_new_user %}
 
   <div class="well primary-header">
     <h2>{% trans 'Login' %}</h2>
@@ -38,7 +39,8 @@
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
         {% blocktrans %}
-          <a href="{{ password_reset }}">Forgot</a> your password?<br />
+          <a href="{{ password_reset }}">Forgot</a> your password? |
+          Need an account? <a href="{{ register_new_user }}">Sign up</a>
         {% endblocktrans %}
       </div>
     </div>
