@@ -11,6 +11,7 @@ from .views import GetTicketVotesView
 from .views import PollUsersView
 from .views import HomeView
 from .views import MeetView
+from .views import RegisterNewUserView
 from .views import VoteOnTicketView
 
 admin.autodiscover()
@@ -19,6 +20,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('django.contrib.auth.urls')),
+    url(r'^accounts/register$', RegisterNewUserView.as_view(), name='register_new_user'),
 
     url(r'^ticket/(?P<ticket_id>LON-\d{4})/vote/(?P<vote>[\d\.]+)$', VoteOnTicketView.as_view(), name='vote_on_ticket'),
     url(r'^ticket/(?P<ticket_id>LON-\d{4})/votes$', GetTicketVotesView.as_view(), name='get_ticket_votes'),
