@@ -24,7 +24,7 @@ To setup Censeo for local development, run the following commands:
 
         django-admin.py runserver 0.0.0.0:8000
 
-1. Navigate to http://0.0.0.0:8000/ (_default username is *myuser*, default password is *asdfasdf*_)
+1. Navigate to http://0.0.0.0:8000/ (_default username is **myuser**, default password is **asdfasdf**_)
 
 ### TODO
 
