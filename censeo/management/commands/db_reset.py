@@ -32,7 +32,6 @@ class Command(NoArgsCommand):
             call_command('migrate', 'censeo')
 
         divider = '================================================================='
-        _('Session {0}').format(self.id)
         self.stdout.write(_(
             "\n{}\n  {} initial user(s) added with temporary password "
             "of '{}'\n  DON'T FORGET TO CHANGE THESE PASSWORDS!!!\n{}\n\n"
