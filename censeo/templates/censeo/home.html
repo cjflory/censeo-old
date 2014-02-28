@@ -1,27 +1,32 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block content %}
 
   <div class="jumbotron">
     <h1>
-      Welcome to Censeo
+      {% trans 'Welcome to Censeo' %}
       {% include 'censeo/img/coffee.html' with classes='pull-right coffee-img' %}
     </h1>
     <p>
-      Censeo is a small app designed to streamline your team's
-      <a href="http://en.wikipedia.org/wiki/Planning_poker">planning poker</a> meetings. Check out
-      the project <a href="https://github.com/cjflory/censeo/blob/master/readme.md">readme</a> for
-      a quick introduction to how Censeo works.
+      {% blocktrans %}
+        Censeo is a small app designed to streamline your team's
+        <a href="http://en.wikipedia.org/wiki/Planning_poker">planning poker</a> meetings. Check out
+        the project <a href="https://github.com/cjflory/censeo/blob/master/readme.md">readme</a> for
+        a quick introduction to how Censeo works.
+      {% endblocktrans %}
     </p>
     <p>
       <a href="{% url 'meet' %}" class="btn btn-primary" role="button">
-        Take me to the meeting!
+        {% trans 'Take me to the meeting!' %}
       </a>
     </p>
   </div>
   <small class="pull-right">
-    Please <a href="https://github.com/cjflory/censeo/issues">report</a> any bugs or
-    suggestions.
+    {% blocktrans %}
+      Please <a href="https://github.com/cjflory/censeo/issues">report</a> any bugs or
+      suggestions.
+    {% endblocktrans %}
   </small>
 
 {% endblock %}

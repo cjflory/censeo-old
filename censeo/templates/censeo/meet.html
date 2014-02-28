@@ -1,15 +1,14 @@
 {% extends 'base.html' %}
-{% load compressed %}
+{% load i18n compressed %}
 
 
-{% block title %}Meeting{% endblock %}
+{% block title %}{% trans 'Meeting' %}{% endblock %}
 
 {% block content %}
   <div class="well primary-header">
     <h2>
       {{ meeting.start|date:DATE_FORMAT.LONG }}
-      <span class="panel pull-right" id="meetingId"
-            data-meeting-id="{{ meeting.id }}">
+      <span class="panel pull-right hide" id="meetingId" data-meeting-id="{{ meeting.id }}">
         {{ meeting.id }}
       </span>
       <span class="clearfix"></span>
@@ -20,16 +19,17 @@
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title">Tickets</h3>
+          <h3 class="panel-title">{% trans 'Tickets' %}</h3>
         </div>
         <div class="panel-body">
           <div id="tickets" data-poll-url="{% url 'poll_tickets' meeting.id %}">
             {% include 'censeo/snippets/tickets.html' with tickets=meeting.tickets.all %}
           </div>
-          <form action="{% url 'add_ticket' %}" method="post" id="addTicket" class="add-ticket-form">
+          <form action="{% url 'add_ticket' %}" method="post" id="addTicket"
+                class="add-ticket-form">
             <div class="input-group">
-              <input type="text" class="form-control" placeholder="Add Ticket" id="addTicketInput" name="id"
-                     autocomplete="off" />
+              <input type="text" class="form-control" placeholder="{% trans 'Add Ticket' %}"
+                     id="addTicketInput" name="id" autocomplete="off" />
               <input type="hidden" name="meeting" value="{{ meeting.id }}" />
               <span class="input-group-btn">
                 <button class="btn btn-default" type="submit">
@@ -44,7 +44,7 @@
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title">Voting</h3>
+          <h3 class="panel-title">{% trans 'Voting' %}</h3>
         </div>
         <div id="voting" class="panel-body">
           {% include 'censeo/snippets/voting.html' %}
@@ -54,7 +54,7 @@
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title">Users</h3>
+          <h3 class="panel-title">{% trans 'Users' %}</h3>
         </div>
         <div id="users" class="panel-body" data-poll-url="{% url 'poll_users' meeting.id %}">
           {% include 'censeo/snippets/users.html' with users=meeting.voters.all %}
@@ -71,7 +71,7 @@
     (function () {
       var censeo = window.censeo || (window.censeo = {});
 
-      censeo.defaultVotingHtml = '{{ DEFAULT_VOTING_HTML|safe }}';
+      censeo.defaultVotingHtml = '{% include 'censeo/snippets/voting_default.html' %}';
     }());
   </script>
 {% endblock %}

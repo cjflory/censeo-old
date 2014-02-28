@@ -84,13 +84,14 @@
         ticketId = $this.data('ticket-id');
 
       $allTicketLinks.removeClass('btn-primary').addClass('btn-default');
-      $this.toggleClass('btn-primary btn-default');
 
       if (cancelling) {
         startTicketPolling();
         $voting.html(censeo.defaultVotingHtml);
         currentTicketId = votePollUrl = undefined;
       } else {
+        $this.toggleClass('btn-primary btn-default');
+
         $voting.children().hide();
         spinner.spin($voting.get(0));
 
@@ -128,8 +129,6 @@
       e.preventDefault();
 
       var $this = $(this);
-
-      // TODO:  Poll for vote results
 
       $voting.children().hide();
       spinner.spin($voting.get(0));
