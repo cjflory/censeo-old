@@ -90,7 +90,6 @@ PIPELINE_JS = {
             'censeo/libs/jquery.maskedinput/jquery.maskedinput.js',
             'censeo/libs/bootstrap/js/bootstrap.js',
             'censeo/libs/underscore/underscore-min.js',
-            'censeo/libs/backbone/backbone-min.js',
             'censeo/libs/jquery.cookie/jquery.cookie.js',
             'censeo/libs/jquery.csrf/jquery.csrf.js',
             'censeo/libs/spin.js/spin.js',
