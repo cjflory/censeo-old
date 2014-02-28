@@ -6,6 +6,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from .managers import MeetingManager
+from .templatetags.censeo_tags import get_full_name_or_username
 
 
 class Constants(object):
@@ -78,6 +79,6 @@ class Vote(models.Model):
     def __unicode__(self):
         return _('{}: {} voted {}').format(
             self.ticket.id,
-            self.user.get_full_name(),
+            get_full_name_or_username(self.user),
             self.get_story_point_display()
         )
