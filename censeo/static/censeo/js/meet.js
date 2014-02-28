@@ -32,15 +32,8 @@
       startVotePolling = function () {
         var pollFunction = function () {
           $.get(votePollUrl, function (votes) {
-            var allVoted = false;
-
             spinner.stop();
             $voting.html(votes);
-
-            allVoted = $voting.find('ul').first().attr('data-all-voted');
-            if (allVoted) {
-              clearInterval(votePoller);
-            }
           });
         };
 
@@ -138,6 +131,13 @@
         spinner.stop();
         $voting.html(result);
       });
+    });
+
+    // Click handler for admin to reset votes after completion
+    $voting.on('click', 'a.reset-votes', function (event) {
+      event.preventDefault();
+
+      $.post($(this).attr('href'));
     });
 
     startTicketPolling();
