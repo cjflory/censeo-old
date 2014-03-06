@@ -1,9 +1,12 @@
-# -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from .managers import MeetingManager
+from .templatetags.censeo_tags import get_full_name_or_username
 
 
 class Constants(object):
@@ -14,17 +17,17 @@ class Constants(object):
         LONG = 'l, N d, Y'
 
     STORY_POINTS = (
-        (0.0, '0'),
-        (0.5, '1/2'),
-        (1.0, '1'),
-        (2.0, '2'),
-        (3.0, '3'),
-        (5.0, '5'),
-        (8.0, '8'),
-        (13.0, '13'),
-        (20.0, '20'),
-        (40.0, '40'),
-        (100.0, '100'),
+        (0.0, _('0')),
+        (0.5, _('1/2')),
+        (1.0, _('1')),
+        (2.0, _('2')),
+        (3.0, _('3')),
+        (5.0, _('5')),
+        (8.0, _('8')),
+        (13.0, _('13')),
+        (20.0, _('20')),
+        (40.0, _('40')),
+        (100.0, _('100')),
     )
 
 
@@ -37,15 +40,15 @@ class Meeting(models.Model):
     objects = MeetingManager()
 
     def __unicode__(self):
-        return u'Meeting on {}'.format(self.start.strftime('%A, %d-%b-%Y'))
+        return _('Meeting on {}').format(self.start.strftime('%A, %d-%b-%Y'))
 
     def voter_count(self):
         return self.voters.count()
-    voter_count.short_description = '# of Voters'
+    voter_count.short_description = _('# of Voters')
 
     def ticket_count(self):
         return self.tickets.count()
-    ticket_count.short_description = '# of Tickets'
+    ticket_count.short_description = _('# of Tickets')
 
 
 class Ticket(models.Model):
@@ -55,7 +58,7 @@ class Ticket(models.Model):
     end = models.DateTimeField(blank=True, null=True)
 
     def __unicode__(self):
-        return u'{}'.format(self.id)
+        return _('{}').format(self.id)
 
     def is_voting_completed(self):
         return self.ticket_votes.count() == self.meeting.voters.count()
@@ -74,8 +77,8 @@ class Vote(models.Model):
         unique_together = ('user', 'ticket')
 
     def __unicode__(self):
-        return u'{}: {} voted {}'.format(
+        return _('{}: {} voted {}').format(
             self.ticket.id,
-            self.user.get_full_name(),
+            get_full_name_or_username(self.user),
             self.get_story_point_display()
         )

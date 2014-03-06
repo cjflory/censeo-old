@@ -25,5 +25,5 @@
     {% endfor %}
   </ul>
 {% else %} {# Default #}
-  {{ DEFAULT_VOTING_HTML|safe }}
+  {% include 'censeo/snippets/voting_default.html' %}
 {% endif %}

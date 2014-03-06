@@ -1,16 +1,16 @@
-# -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 import os
-import shutil
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management import call_command
 from django.core.management.base import NoArgsCommand
+from django.utils.translation import ugettext_lazy as _
 
 
 class Command(NoArgsCommand):
-    help = 'Erase the current database and setup a new one'
+    help = _('Erase the current database and setup a new one')
     default_password = 'asdfasdf'
     users = (
         {'username': 'myuser', 'email': 'me@gmail.com', 'firstname': 'My', 'lastname': 'User',
@@ -24,7 +24,7 @@ class Command(NoArgsCommand):
             db_path = settings.DATABASES['default']['NAME']
             if os.path.exists(db_path):
                 os.remove(db_path)
-                self.stdout.write('Deleted the SQLite database')
+                self.stdout.write(_('Deleted the SQLite database'))
 
             # Setup the new database
             call_command('syncdb', interactive=False)
@@ -32,11 +32,10 @@ class Command(NoArgsCommand):
             call_command('migrate', 'censeo')
 
         divider = '================================================================='
-        self.stdout.write(
+        self.stdout.write(_(
             "\n{}\n  {} initial user(s) added with temporary password "
-            "of '{}'\n  DON'T FORGET TO CHANGE THESE PASSWORDS!!!\n{}"
-            "\n\n".format(divider, len(self.users), self.default_password, divider)
-        )
+            "of '{}'\n  DON'T FORGET TO CHANGE THESE PASSWORDS!!!\n{}\n\n"
+        ).format(divider, len(self.users), self.default_password, divider))
 
     def add_initial_users(self):
         for user_data in self.users:
