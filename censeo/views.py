@@ -7,9 +7,12 @@ from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
+from django.http import HttpResponseBadRequest
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.views.generic import CreateView
+from django.views.generic import DeleteView
 from django.views.generic import FormView
 from django.views.generic import TemplateView
 
@@ -126,6 +129,25 @@ class GetTicketVotesView(TicketVotingBaseView):
         context = super(GetTicketVotesView, self).get_context_data(**kwargs)
         context.update(self.get_vote_context(context['selected_ticket']))
         return context
+
+
+class ResetTicketVotesView(BaseAjaxView, DeleteView):
+    model = Ticket
+    pk_url_kwarg = 'ticket_id'
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return HttpResponseForbidden()
+
+        return super(ResetTicketVotesView, self).post(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        ticket = self.get_object()
+        if not ticket.is_voting_completed():
+            return HttpResponseBadRequest()
+
+        ticket.ticket_votes.all().delete()
+        return HttpResponse(status=204)
 
 
 class VoteOnTicketView(TicketVotingBaseView):

@@ -1,7 +1,7 @@
-{% load censeo_tags %}
+{% load censeo_tags i18n %}
 
 {% if votes %}
-  <ul class="simple-list vote-results user-list"{% if all_voted %} data-all-voted="true"{% endif %}>
+  <ul class="simple-list vote-results user-list">
     {% for vote in votes %}
       <li class="vote-result">
         <span class="badge pull-right">
@@ -15,6 +15,18 @@
       </li>
     {% endfor %}
   </ul>
+  {% if all_voted and user.is_superuser %}
+    <p class="reset-container">
+      {# Allow superusers to reset votes #}
+      {% url 'reset_ticket_votes' selected_ticket.id as reset_ticket_votes %}
+      {% blocktrans %}
+        Need to vote again?
+        <a href="{{ reset_ticket_votes }}" class="btn btn-info reset-votes">
+          <i class="glyphicon glyphicon-repeat"></i> Reset
+        </a>
+      {% endblocktrans %}
+    </p>
+  {% endif %}
 {% elif voting %} {# Allow user to vote #}
   <ul class="simple-list vote-options">
     {% for value, display in STORY_POINTS %}
