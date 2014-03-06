@@ -110,6 +110,8 @@ ACCOUNT_ACTIVATION_DAYS = 3
 
 # Ticket Validation Settings
 TICKET_REGEX = r'LON-\d{4}'
+# The TICKET_MASK_* settings are used to configure the jQuery Masked Input Plugin
+# See http://digitalbush.com/projects/masked-input-plugin/#usage for more information
 TICKET_MASK_DEFINITIONS = {
     'L': '[Ll]',
     'O': '[Oo]',
