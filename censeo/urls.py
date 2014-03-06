@@ -13,6 +13,7 @@ from .views import PollUsersView
 from .views import HomeView
 from .views import MeetView
 from .views import RegisterNewUserView
+from .views import ResetTicketVotesView
 from .views import VoteOnTicketView
 
 admin.autodiscover()
@@ -25,6 +26,7 @@ urlpatterns = patterns('',
 
     url(r'^ticket/(?P<ticket_id>LON-\d{4})/vote/(?P<vote>[\d\.]+)$', VoteOnTicketView.as_view(), name='vote_on_ticket'),
     url(r'^ticket/(?P<ticket_id>LON-\d{4})/votes$', GetTicketVotesView.as_view(), name='get_ticket_votes'),
+    url(r'^ticket/(?P<ticket_id>LON-\d{4})/votes/reset$', ResetTicketVotesView.as_view(), name='reset_ticket_votes'),
     url(r'^ticket/add$', AddTicketView.as_view(), name='add_ticket'),
 
     url(r'^meeting/(?P<meeting_id>\d+)/tickets$', PollTicketsView.as_view(), name='poll_tickets'),
