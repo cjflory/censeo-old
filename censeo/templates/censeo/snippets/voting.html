@@ -1,7 +1,7 @@
 {% load censeo_tags i18n %}
 
 {% if votes %}
-  <ul class="simple-list vote-results user-list"{% if all_voted %} data-all-voted="true"{% endif %}>
+  <ul class="simple-list vote-results user-list">
     {% for vote in votes %}
       <li class="vote-result">
         <span class="badge pull-right">
