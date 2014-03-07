@@ -39,12 +39,19 @@ else
     cdvirtualenv
 fi
 
+# Generate a secret key
+MD5_BINARY=$(which md5sum)
+if [ -z $MD5_BINARY ]; then
+    MD5_BINARY=$(which md5)
+fi
+SECRET_KEY=$(date | $MD5_BINARY)
+
 git clone https://github.com/cjflory/censeo.git src/$1
 cd src/$1
 git remote rm origin
 echo export PYTHONPATH='$VIRTUAL_ENV'/src/$1 >> $VIRTUAL_ENV/bin/postactivate
 echo export DJANGO_SETTINGS_MODULE=censeo.settings >> $VIRTUAL_ENV/bin/postactivate
-echo export SECRET_KEY='secret-dev-key' >> $VIRTUAL_ENV/bin/postactivate
+echo export SECRET_KEY=$SECRET_KEY >> $VIRTUAL_ENV/bin/postactivate
 echo unset PYTHONPATH >> $VIRTUAL_ENV/bin/postdeactivate
 echo unset DJANGO_SETTINGS_MODULE >> $VIRTUAL_ENV/bin/postdeactivate
 echo unset SECRET_KEY >> $VIRTUAL_ENV/bin/postdeactivate

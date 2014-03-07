@@ -67,11 +67,13 @@
 {% block js %}
   {{ block.super }}
   {% compressed_js 'meet' %}
-  <script type="application/javascript">
+  <script>
     (function () {
       var censeo = window.censeo || (window.censeo = {});
 
       censeo.defaultVotingHtml = '{% include 'censeo/snippets/voting_default.html' %}';
+      censeo.ticketMaskDefinitions = {% autoescape off %}{{ TICKET_MASK_DEFINITIONS }}{% endautoescape %};
+      censeo.ticketMask = '{{ TICKET_MASK }}';
     }());
   </script>
 {% endblock %}

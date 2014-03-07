@@ -1,5 +1,4 @@
 
-from __future__ import unicode_literals
 import os
 import sys
 
@@ -8,7 +7,7 @@ from django.core.urlresolvers import reverse_lazy
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-SECRET_KEY = os.environ["SECRET_KEY"]
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -108,6 +107,17 @@ PIPELINE_JS = {
 # Registration
 LOGIN_REDIRECT_URL = reverse_lazy('meet')
 ACCOUNT_ACTIVATION_DAYS = 3
+
+# Ticket Validation Settings
+TICKET_REGEX = r'LON-\d{4}'
+# The TICKET_MASK_* settings are used to configure the jQuery Masked Input Plugin
+# See http://digitalbush.com/projects/masked-input-plugin/#usage for more information
+TICKET_MASK_DEFINITIONS = {
+    'L': '[Ll]',
+    'O': '[Oo]',
+    'N': '[Nn]',
+}
+TICKET_MASK = 'LON-9999'
 
 if 'runserver' in sys.argv:
     EMAIL_PORT = 1025

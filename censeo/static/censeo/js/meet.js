@@ -11,9 +11,9 @@
       top: 0 // Top position relative to parent in px
     });
 
-  $.mask.definitions.L = "[Ll]";
-  $.mask.definitions.O = "[Oo]";
-  $.mask.definitions.N = "[Nn]";
+  _.each(_.keys(censeo.ticketMaskDefinitions), function (key) {
+    $.mask.definitions[key] = censeo.ticketMaskDefinitions[key];
+  });
 
   $(function () {
 
@@ -63,7 +63,7 @@
       };
 
     // Restrict input to expected format
-    $addTicketInput.mask('LON-9999');
+    $addTicketInput.mask(censeo.ticketMask);
 
     // Click handler for ticket links
     $tickets.on('click', '.ticket a', function (e) {
