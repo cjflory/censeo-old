@@ -1,7 +1,20 @@
-{% load censeo_tags %}
+{% load i18n censeo_tags %}
 
 <ul class="simple-list user-list">
-  {% for user in users %}
-    <li class="user">{% get_full_name_or_username user %}</li>
+  {% for voter in voters %}
+    <li class="user">{% get_full_name_or_username voter %}</li>
+  {% endfor %}
+  {% for observer in observers %}
+    <li class="user">
+      {% get_full_name_or_username observer %}
+      <span class="pull-right label label-info">
+        <i class="glyphicon glyphicon-eye-open"></i>
+      </span>
+    </li>
   {% endfor %}
 </ul>
+{% if user in voters %}
+  <a href="{% url 'become_observer' meeting.id %}" class="btn btn-info become-observer">
+    {% trans 'Just observing?' %}
+  </a>
+{% endif %}
