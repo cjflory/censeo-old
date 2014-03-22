@@ -108,7 +108,7 @@ PIPELINE_JS = {
 LOGIN_REDIRECT_URL = reverse_lazy('meet')
 ACCOUNT_ACTIVATION_DAYS = 3
 
-# Ticket Validation Settings
+# Ticket Settings
 TICKET_REGEX = r'LON-\d{4}'
 # The TICKET_MASK_* settings are used to configure the jQuery Masked Input Plugin
 # See http://digitalbush.com/projects/masked-input-plugin/#usage for more information
@@ -118,6 +118,7 @@ TICKET_MASK_DEFINITIONS = {
     'N': '[Nn]',
 }
 TICKET_MASK = 'LON-9999'
+TICKET_URL = '//jira2.cerner.corp/browse/{ticket_number}'
 
 if 'runserver' in sys.argv:
     EMAIL_PORT = 1025

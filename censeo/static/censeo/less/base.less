@@ -1,5 +1,11 @@
 @import '../libs/lesshat/lesshat';
 
+@error: #F00;
+@completeText: #FFF;
+@completeBackground: #5BC0DE;
+@defaultText: #333;
+@defaultBorder: #DDD;
+
 body {
   padding-top: 70px;
 }
@@ -11,7 +17,7 @@ body {
 
 
 .errors {
-  color: #F00;
+  color: @error;
   text-align: center;
   margin-top: 6px;
 }
@@ -38,6 +44,9 @@ body {
   }
 }
 
+#refreshTickets {
+  color: @defaultText;
+}
 
 .simple-list {
   list-style-type: none;
@@ -55,8 +64,30 @@ body {
       a,
       a:focus,
       a:active {
-        width: 100%;
         outline: none;
+
+        &.select-ticket {
+          width: 86%;
+          position: relative;
+
+          &.is-superuser {
+            width: 72%;
+          }
+
+          &.btn-default.complete {
+            color: @completeText;
+            background: @completeBackground;
+          }
+        }
+
+        &.view-ticket {
+          width: 13%;
+          margin-right: 1%;
+        }
+
+        &.remove-ticket {
+          width: 13%;
+        }
       }
     }
   }
@@ -80,7 +111,7 @@ body {
 
   &.user-list {
     li {
-      border-top: 1px dotted #DDD;
+      border-top: 1px dotted @defaultBorder;
       padding: 2px 0;
 
       &:first-child {
@@ -96,7 +127,7 @@ body {
 
   li.error {
     text-align: center;
-    color: #FF0000;
+    color: @error;
   }
 }
 

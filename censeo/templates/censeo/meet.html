@@ -19,6 +19,10 @@
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading">
+          <a href="{% url 'poll_tickets' meeting.id %}" class="pull-right" id="refreshTickets"
+             title="{% trans 'Refresh Tickets' %}">
+            <i class="glyphicon glyphicon-refresh"></i>
+          </a>
           <h3 class="panel-title">{% trans 'Tickets' %}</h3>
         </div>
         <div class="panel-body">
@@ -74,6 +78,7 @@
       censeo.defaultVotingHtml = '{% include 'censeo/snippets/voting_default.html' %}';
       censeo.ticketMaskDefinitions = {% autoescape off %}{{ TICKET_MASK_DEFINITIONS }}{% endautoescape %};
       censeo.ticketMask = '{{ TICKET_MASK }}';
+      censeo.confirmRemove = '{% trans 'Are you sure you want to remove this ticket?' %}';
     }());
   </script>
 {% endblock %}
