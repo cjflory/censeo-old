@@ -34,6 +34,7 @@ class Constants(object):
 class Meeting(models.Model):
     notes = models.TextField(blank=True, null=True)
     voters = models.ManyToManyField(User, related_name='meetings_as_voter', blank=True, null=True)
+    observers = models.ManyToManyField(User, related_name='meetings_as_observer', blank=True)
     start = models.DateTimeField(auto_now_add=True)
     end = models.DateTimeField(blank=True, null=True)
 
@@ -64,7 +65,8 @@ class Ticket(models.Model):
         return self.ticket_votes.count() == self.meeting.voters.count()
 
     def has_user_voted(self, user):
-        return self.ticket_votes.filter(user=user).exists()
+        is_observer = self.meeting.observers.filter(username=user.username).exists()
+        return is_observer or self.ticket_votes.filter(user=user).exists()
 
 
 class Vote(models.Model):

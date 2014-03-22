@@ -21,7 +21,7 @@
       {% url 'reset_ticket_votes' selected_ticket.id as reset_ticket_votes %}
       {% blocktrans %}
         Need to vote again?
-        <a href="{{ reset_ticket_votes }}" class="btn btn-info reset-votes">
+        <a href="{{ reset_ticket_votes }}" class="btn btn-info btn-xs reset-votes">
           <i class="glyphicon glyphicon-repeat"></i> Reset
         </a>
       {% endblocktrans %}

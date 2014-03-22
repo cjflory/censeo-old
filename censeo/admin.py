@@ -15,7 +15,7 @@ class TicketInline(admin.TabularInline):
 class MeetingAdmin(admin.ModelAdmin):
     inlines = [TicketInline]
     list_display = ('__unicode__', 'ticket_count', 'voter_count')
-    filter_horizontal = ('voters',)
+    filter_horizontal = ('voters', 'observers',)
     save_on_top = True
 
 

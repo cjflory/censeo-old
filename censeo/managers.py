@@ -13,7 +13,12 @@ class MeetingManager(models.Manager):
         now = timezone.now()
         min, max = now - relativedelta(hours=12), now + relativedelta(hours=12)
         meeting, created = self.get_or_create(start__range=(min, max))
-        if not meeting.voters.filter(username=user.username).first():
+
+        # Check if the user is already set as a voter or observer for the meeting
+        is_voter = meeting.voters.filter(username=user.username).exists()
+        is_observer = meeting.observers.filter(username=user.username).exists()
+        if not is_voter and not is_observer:
+            # User should initially be added as a voter
             meeting.voters.add(user)
 
         return meeting

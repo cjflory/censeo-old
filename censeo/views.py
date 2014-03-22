@@ -13,6 +13,7 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.views.generic import CreateView
 from django.views.generic import DeleteView
+from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import TemplateView
 
@@ -72,29 +73,41 @@ class AddTicketView(BaseAjaxView, FormView):
         return HttpResponse(json.dumps({'errors': form.errors}), content_type="application/json")
 
 
-class BasePollView(BaseAjaxView, TemplateView):
-    """ Base view for views that handle meeting polling """
+class BaseMeetingAjaxView(BaseAjaxView, DetailView):
+    """ Base view for views that pass meeting_id as a url kwarg """
+    context_object_name = 'meeting'
+    model = Meeting
+    pk_url_kwarg = 'meeting_id'
 
-    def get_queryset(self, **kwargs):
-        meeting = get_object_or_404(Meeting, id=kwargs['meeting_id'])
-        return getattr(meeting, self.meeting_attr).all()
+
+class PollTicketsView(BaseMeetingAjaxView):
+    template_name = 'censeo/snippets/tickets.html'
 
     def get_context_data(self, **kwargs):
-        context = super(BasePollView, self).get_context_data(**kwargs)
-        context[self.context_key] = self.get_queryset(**kwargs)
+        context = super(PollTicketsView, self).get_context_data(**kwargs)
+        context['tickets'] = context['meeting'].tickets.all()
+        return context
+
+class PollUsersView(BaseMeetingAjaxView):
+    template_name = 'censeo/snippets/users.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PollUsersView, self).get_context_data(**kwargs)
+        context['voters'] = context['meeting'].voters.all()
+        context['observers'] = context['meeting'].observers.all()
         return context
 
 
-class PollTicketsView(BasePollView):
-    template_name = 'censeo/snippets/tickets.html'
-    context_key = 'tickets'
-    meeting_attr = 'tickets'
+class BecomeObserverView(BaseMeetingAjaxView):
+    """ View to switch the user from a voter to an observer in the meeting """
+    http_method_names = ['post']
 
+    def post(self, *args, **kwargs):
+        meeting = self.get_object()
+        meeting.voters.remove(self.request.user)
+        meeting.observers.add(self.request.user)
 
-class PollUsersView(BasePollView):
-    template_name = 'censeo/snippets/users.html'
-    context_key = 'users'
-    meeting_attr = 'voters'
+        return HttpResponse(status=204)
 
 
 class TicketVotingBaseView(BaseAjaxView, TemplateView):

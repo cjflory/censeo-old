@@ -139,6 +139,13 @@
       $.post($(this).attr('href'));
     });
 
+    // Click handler for voter to become an observer
+    $users.on('click', 'a.become-observer', function (event) {
+      event.preventDefault();
+
+      $.post($(this).attr('href'));
+    });
+
     startTicketPolling();
     startUserPolling();
 
