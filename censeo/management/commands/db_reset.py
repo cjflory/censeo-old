@@ -31,11 +31,16 @@ class Command(NoArgsCommand):
             self.add_initial_users()
             call_command('migrate', 'censeo')
 
-        divider = '================================================================='
+        divider = '==========================================================================='
         self.stdout.write(_(
-            "\n{}\n  {} initial user(s) added with temporary password "
-            "of '{}'\n  DON'T FORGET TO CHANGE THESE PASSWORDS!!!\n{}\n\n"
-        ).format(divider, len(self.users), self.default_password, divider))
+            "\n{}\n  The following users were added with a temporary password of '{}':"
+            "\n    {}\n\n  DON'T FORGET TO CHANGE THESE PASSWORDS!!!\n{}\n\n"
+        ).format(
+            divider,
+            self.default_password,
+            '\n    '.join([user['username'] for user in self.users]),
+            divider
+        ))
 
     def add_initial_users(self):
         for user_data in self.users:

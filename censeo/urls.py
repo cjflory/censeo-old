@@ -15,6 +15,7 @@ from .views import PollUsersView
 from .views import HomeView
 from .views import MeetView
 from .views import RegisterNewUserView
+from .views import RemoveTicketView
 from .views import ResetTicketVotesView
 from .views import VoteOnTicketView
 
@@ -33,10 +34,13 @@ urlpatterns = patterns('',
         GetTicketVotesView.as_view(), name='get_ticket_votes'),
     url(r'^ticket/(?P<ticket_id>{})/votes/reset$'.format(settings.TICKET_REGEX),
         ResetTicketVotesView.as_view(), name='reset_ticket_votes'),
+    url(r'^ticket/(?P<ticket_id>{})/remove$'.format(settings.TICKET_REGEX),
+        RemoveTicketView.as_view(), name='remove_ticket'),
     url(r'^ticket/add$', AddTicketView.as_view(), name='add_ticket'),
 
     # Meeting AJAX URLs
-    url(r'^meeting/(?P<meeting_id>\d+)/become-observer$', BecomeObserverView.as_view(), name='become_observer'),
+    url(r'^meeting/(?P<meeting_id>\d+)/become-observer$', BecomeObserverView.as_view(),
+        name='become_observer'),
     url(r'^meeting/(?P<meeting_id>\d+)/tickets$', PollTicketsView.as_view(), name='poll_tickets'),
     url(r'^meeting/(?P<meeting_id>\d+)/users$', PollUsersView.as_view(), name='poll_users'),
 

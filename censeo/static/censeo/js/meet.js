@@ -27,13 +27,21 @@
       votePollUrl, // Gets set when a ticket is selected
       ticketPollUrl = $tickets.data('poll-url'),
       userPollUrl = $users.data('poll-url'),
-      pollInterval = 1000,
+      pollInterval = 1500,
       votePoller, ticketPoller, userPoller,
+      refreshTickets = function () {
+        $.get(ticketPollUrl, function (tickets) {
+          $tickets.html(tickets);
+        });
+      },
       startVotePolling = function () {
         var pollFunction = function () {
           $.get(votePollUrl, function (votes) {
             spinner.stop();
             $voting.html(votes);
+          }).fail(function () {
+            clearInterval(votePoller);
+            $('#refreshTickets').trigger('click');
           });
         };
 
@@ -46,27 +54,35 @@
       startTicketPolling = function () {
         // Prevent multiple pollers to get started
         clearInterval(ticketPoller);
-        ticketPoller = setInterval(function () {
-          $.get(ticketPollUrl, function (tickets) {
-            $tickets.html(tickets);
-          });
-        }, pollInterval);
+        ticketPoller = setInterval(refreshTickets, pollInterval);
       },
       startUserPolling = function () {
-        // Prevent multiple pollers to get started
-        clearInterval(userPoller);
-        userPoller = setInterval(function () {
+        var pollFunction = function () {
           $.get(userPollUrl, function (users) {
             $users.html(users);
           });
-        }, pollInterval);
+        };
+
+        // Call the poll function initially, then start polling
+        pollFunction();
+        // Prevent multiple pollers to get started
+        clearInterval(userPoller);
+        userPoller = setInterval(pollFunction, pollInterval);
       };
 
     // Restrict input to expected format
     $addTicketInput.mask(censeo.ticketMask);
 
+    // Click handler for manually refreshing tickets
+    $('#refreshTickets').on('click', function (event) {
+      event.preventDefault();
+
+      $tickets.find('a.btn-primary').trigger('click');
+      refreshTickets();
+    });
+
     // Click handler for ticket links
-    $tickets.on('click', '.ticket a', function (e) {
+    $tickets.on('click', '.select-ticket', function (e) {
       e.preventDefault();
       clearInterval(ticketPoller);
       clearInterval(votePoller);
@@ -91,6 +107,22 @@
         currentTicketId = ticketId;
         votePollUrl = $this.attr('href');
         startVotePolling();
+      }
+    });
+
+    // Click handler for removing tickets
+    $tickets.on('click', '.remove-ticket', function (e) {
+      e.preventDefault();
+
+      var $this = $(this),
+        $parent = $this.parent();
+
+      if (confirm(censeo.confirmRemove)) {
+        $.post($this.attr('href'), function () {
+          $parent.slideUp(function () {
+            $parent.remove();
+          });
+        });
       }
     });
 

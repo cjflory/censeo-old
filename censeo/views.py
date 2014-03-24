@@ -73,6 +73,21 @@ class AddTicketView(BaseAjaxView, FormView):
         return HttpResponse(json.dumps({'errors': form.errors}), content_type="application/json")
 
 
+class RemoveTicketView(BaseAjaxView, DeleteView):
+    model = Ticket
+    pk_url_kwarg = 'ticket_id'
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return HttpResponseForbidden()
+
+        return super(RemoveTicketView, self).post(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        self.get_object().delete()
+        return HttpResponse(status=204)
+
+
 class BaseMeetingAjaxView(BaseAjaxView, DetailView):
     """ Base view for views that pass meeting_id as a url kwarg """
     context_object_name = 'meeting'
@@ -87,6 +102,7 @@ class PollTicketsView(BaseMeetingAjaxView):
         context = super(PollTicketsView, self).get_context_data(**kwargs)
         context['tickets'] = context['meeting'].tickets.all()
         return context
+
 
 class PollUsersView(BaseMeetingAjaxView):
     template_name = 'censeo/snippets/users.html'

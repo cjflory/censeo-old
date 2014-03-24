@@ -1,4 +1,19 @@
+{% load i18n %}
+
 <li class="ticket">
-  <a href="{% url 'get_ticket_votes' ticket.id %}" data-ticket-id="{{ ticket.id }}"
-     class="btn btn-default btn-sm">{{ ticket.id }}</a>
+  <a href="{{ ticket.get_view_ticket_url }}" class="btn btn-default btn-sm pull-left view-ticket"
+     target="_blank" title="{% trans 'View Ticket' %}">
+    <i class="glyphicon glyphicon-new-window"></i>
+  </a>
+  <a href="{% url 'get_ticket_votes' ticket.id %}" data-ticket-id="{{ ticket.id }}" title="{% trans 'Vote' %}"
+     class="btn btn-default btn-sm pull-left select-ticket{% if user.is_superuser %} is-superuser{% endif %}{% if ticket.is_voting_completed %} complete{% endif %}">
+    {{ ticket.id }}
+  </a>
+  {% if user.is_superuser %}
+    <a href="{% url 'remove_ticket' ticket.id %}" title="{% trans 'Remove Ticket' %}"
+       class="btn btn-danger btn-sm pull-right remove-ticket">
+      <i class="glyphicon glyphicon-trash"></i>
+    </a>
+  {% endif %}
+  <div class="clearfix"> </div>
 </li>
