@@ -2,7 +2,7 @@
 
 <ul class="simple-list user-list">
   {% for voter in voters %}
-    <li class="user">{% get_full_name_or_username voter %}</li>
+    {% include 'censeo/snippets/voter.html' %}
   {% endfor %}
   {% for observer in observers %}
     <li class="user">
@@ -13,8 +13,3 @@
     </li>
   {% endfor %}
 </ul>
-{% if user in voters %}
-  <a href="{% url 'become_observer' meeting.id %}" class="btn btn-info btn-xs become-observer">
-    {% trans 'Just observing?' %}
-  </a>
-{% endif %}

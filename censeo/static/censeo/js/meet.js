@@ -19,6 +19,9 @@
 
     var $addTicketForm = $('#addTicket'),
       $addTicketInput = $addTicketForm.find('#addTicketInput'),
+      $addVoterForm = $('#addVoter'),
+      $addVoterInput = $addVoterForm.find('#addVoterInput'),
+      $searchUserUrl = $addVoterInput.data('search-url'),
       $tickets = $('#tickets'),
       $voting = $('#voting'),
       $users = $('#users'),
@@ -130,7 +133,7 @@
       e.preventDefault();
 
       $.post($addTicketForm.attr('action'), $addTicketForm.serialize(), function (result) {
-        $('.errors').remove();
+        $addTicketForm.find('.errors').remove();
 
         if (result.errors) {
           // Sample result:  {"errors": {"id": ["Invalid ticket id"]}}
@@ -146,6 +149,47 @@
           $addTicketInput.val('').focus();
         }
       });
+    });
+
+    // Click handler for #addVoter form
+    $addVoterForm.on('submit', function (e) {
+      e.preventDefault();
+
+      $.post($addVoterForm.attr('action'), $addVoterForm.serialize(), function (result) {
+        $addVoterForm.find('.errors').remove();
+
+        if (result.errors) {
+          // Sample result:  {"errors": {"id": ["Invalid username"]}}
+          var addError = function (text) {
+            $addVoterForm.append( $('<div>', {'class': 'errors', text: text}) );
+          };
+
+          _.each(_.keys(result.errors), function (key) {
+            _.each(result.errors[key], addError);
+          });
+        } else {
+          $users.find('.user-list').append(result);
+          $addVoterInput.val('').focus();
+        }
+      });
+    });
+
+    // Autocomplete for #addVoterInput
+    $addVoterInput.autocomplete({
+      delay: 100,
+      minLength: 2,
+      autoFocus: true,
+      source: $searchUserUrl,
+      create: function(event, ui) {
+        // jQuery UI adds a span for accessibility, it messes up bootstrap styles :(
+        $(this).prev('.ui-helper-hidden-accessible').remove();
+      },
+      select: function(event, ui) {
+        if (ui.item) {
+          $(this).val(ui.item.value);
+          $addVoterForm.trigger('submit');
+        }
+      }
     });
 
     // Click handler for voting on a ticket

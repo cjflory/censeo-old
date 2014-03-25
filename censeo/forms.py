@@ -5,8 +5,10 @@ import re
 
 from django import forms
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
+from .models import Meeting
 from .models import Ticket
 
 
@@ -21,4 +23,25 @@ class AddTicketForm(forms.ModelForm):
         if re.match(r'^{}$'.format(settings.TICKET_REGEX), id):
             return id
 
-        raise forms.ValidationError(_('Invalid ticket ID.'))
+        raise forms.ValidationError(_('Invalid ticket id'))
+
+
+class AddVoterForm(forms.Form):
+    voter = forms.ModelChoiceField(
+        queryset=User.objects.filter(is_active=True),
+        to_field_name='username',
+        error_messages={'invalid_choice': _('Invalid username')}
+    )
+    meeting = forms.ModelChoiceField(
+        queryset=Meeting.objects.all(),
+        error_messages={'invalid_choice': _('Invalid meeting id')}
+    )
+
+    def clean(self):
+        cleaned_data = super(AddVoterForm, self).clean()
+        voter, meeting = cleaned_data.get("voter"), cleaned_data.get("meeting")
+        if voter and meeting and (meeting.voters.filter(username=voter.username)
+                                 or meeting.observers.filter(username=voter.username)):
+            raise forms.ValidationError(_('User is already in this meeting'))
+
+        return cleaned_data
