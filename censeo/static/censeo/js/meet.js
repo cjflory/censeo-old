@@ -17,10 +17,10 @@
 
   $(function () {
 
-    var $addTicketForm = $('#addTicket'),
-      $addTicketInput = $addTicketForm.find('#addTicketInput'),
+    var $addForms = $('#addTicket,#addVoter'),
       $addVoterForm = $('#addVoter'),
-      $addVoterInput = $addVoterForm.find('#addVoterInput'),
+      $addTicketInput = $('#addTicketInput'),
+      $addVoterInput = $('#addVoterInput'),
       $searchUserUrl = $addVoterInput.data('search-url'),
       $tickets = $('#tickets'),
       $voting = $('#voting'),
@@ -128,48 +128,30 @@
       }
     });
 
-    // Click handler for #addTicket form
-    $addTicketForm.on('submit', function (e) {
+    // Click handler for #addTicket & #addVoter forms
+    $addForms.on('submit', function (e) {
       e.preventDefault();
 
-      $.post($addTicketForm.attr('action'), $addTicketForm.serialize(), function (result) {
-        $addTicketForm.find('.errors').remove();
+      var $form = $(this),
+        isTicketForm = $form.attr('id') === 'addTicket',
+        $listContainer = isTicketForm ? $tickets.find('.ticket-list') : $users.find('.user-list'),
+        $primaryInput = isTicketForm ? $addTicketInput : $addVoterInput;
+
+      $.post($form.attr('action'), $form.serialize(), function (result) {
+        $form.find('.errors').remove();
 
         if (result.errors) {
           // Sample result:  {"errors": {"id": ["Invalid ticket id"]}}
           var addError = function (text) {
-            $addTicketForm.append( $('<div>', {'class': 'errors', text: text}) );
+            $form.append( $('<div>', {'class': 'errors', text: text}) );
           };
 
           _.each(_.keys(result.errors), function (key) {
             _.each(result.errors[key], addError);
           });
         } else {
-          $tickets.find('.ticket-list').append(result);
-          $addTicketInput.val('').focus();
-        }
-      });
-    });
-
-    // Click handler for #addVoter form
-    $addVoterForm.on('submit', function (e) {
-      e.preventDefault();
-
-      $.post($addVoterForm.attr('action'), $addVoterForm.serialize(), function (result) {
-        $addVoterForm.find('.errors').remove();
-
-        if (result.errors) {
-          // Sample result:  {"errors": {"id": ["Invalid username"]}}
-          var addError = function (text) {
-            $addVoterForm.append( $('<div>', {'class': 'errors', text: text}) );
-          };
-
-          _.each(_.keys(result.errors), function (key) {
-            _.each(result.errors[key], addError);
-          });
-        } else {
-          $users.find('.user-list').append(result);
-          $addVoterInput.val('').focus();
+          $listContainer.append(result);
+          $primaryInput.val('').focus();
         }
       });
     });
