@@ -17,8 +17,7 @@
 
   $(function () {
 
-    var // meetingId = $('#meetingId').data('meeting-id'),
-      $addTicketForm = $('#addTicket'),
+    var $addTicketForm = $('#addTicket'),
       $addTicketInput = $addTicketForm.find('#addTicketInput'),
       $tickets = $('#tickets'),
       $voting = $('#voting'),

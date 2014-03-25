@@ -1,18 +1,11 @@
 {% extends 'base.html' %}
 {% load i18n compressed %}
 
-
 {% block title %}{% trans 'Meeting' %}{% endblock %}
 
 {% block content %}
   <div class="well primary-header">
-    <h2>
-      {{ meeting.start|date:DATE_FORMAT.LONG }}
-      <span class="panel pull-right hide" id="meetingId" data-meeting-id="{{ meeting.id }}">
-        {{ meeting.id }}
-      </span>
-      <span class="clearfix"></span>
-    </h2>
+    <h2>{{ meeting.start|date:DATE_FORMAT.LONG }}</h2>
   </div>
 
   <div class="row">
@@ -73,6 +66,8 @@
   {% compressed_js 'meet' %}
   <script>
     (function () {
+      'use strict';
+
       var censeo = window.censeo || (window.censeo = {});
 
       censeo.defaultVotingHtml = '{% include 'censeo/snippets/voting_default.html' %}';
