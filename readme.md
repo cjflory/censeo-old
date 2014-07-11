@@ -50,4 +50,4 @@ To setup Censeo for local development, run the following commands:
 
 ### TODO
 
-* Write tests
+* Add more tests

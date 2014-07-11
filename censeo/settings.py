@@ -111,6 +111,13 @@ PIPELINE_JS = {
     }
 }
 
+# Test settings
+if 'test' in sys.argv:
+    INSTALLED_APPS += ('django_nose',)
+    TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+    NOSE_ARGS = ['--nocapture', '--with-coverage', '--cover-html', '--cover-erase',
+                 '--cover-branches', '--cover-package=censeo', '-e=settings.py']
+
 # Registration
 LOGIN_REDIRECT_URL = reverse_lazy('meet')
 ACCOUNT_ACTIVATION_DAYS = 3
