@@ -1,0 +1,11 @@
+{% load i18n censeo_tags %}
+
+<li class="user">
+  {% if user == voter %}
+    <a href="{% url 'become_observer' meeting.id %}"
+       class="pull-right become-observer">
+      {% trans 'Just observing?' %}
+    </a>
+  {% endif %}
+  {% get_full_name_or_username voter %}
+</li>

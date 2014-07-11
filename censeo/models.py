@@ -1,12 +1,15 @@
 
 from __future__ import unicode_literals
 
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from .managers import MeetingManager
 from .templatetags.censeo_tags import get_full_name_or_username
+
+User = get_user_model()
 
 
 class Constants(object):
@@ -59,7 +62,7 @@ class Ticket(models.Model):
     end = models.DateTimeField(blank=True, null=True)
 
     def __unicode__(self):
-        return _('{}').format(self.id)
+        return '{}'.format(self.id)
 
     def is_voting_completed(self):
         return self.ticket_votes.count() == self.meeting.voters.count()
@@ -67,6 +70,9 @@ class Ticket(models.Model):
     def has_user_voted(self, user):
         is_observer = self.meeting.observers.filter(username=user.username).exists()
         return is_observer or self.ticket_votes.filter(user=user).exists()
+
+    def get_view_ticket_url(self):
+        return settings.TICKET_URL.format(ticket_number=self.id)
 
 
 class Vote(models.Model):

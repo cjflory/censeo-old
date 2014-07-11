@@ -1,5 +1,7 @@
 *.pyc
+.coverage
 db.sqlite3
 collected_static/
+cover/
 node_modules/
 censeo/static/censeo/less/*.css

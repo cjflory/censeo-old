@@ -1,24 +1,26 @@
 {% extends 'base.html' %}
 {% load i18n compressed %}
 
-
 {% block title %}{% trans 'Meeting' %}{% endblock %}
 
+{% block css %}
+  {{ block.super }}
+  {% compressed_css 'meet' %}
+{% endblock %}
+
 {% block content %}
-  <div class="well primary-header">
-    <h2>
-      {{ meeting.start|date:DATE_FORMAT.LONG }}
-      <span class="panel pull-right hide" id="meetingId" data-meeting-id="{{ meeting.id }}">
-        {{ meeting.id }}
-      </span>
-      <span class="clearfix"></span>
-    </h2>
+  <div class="well">
+    <h1>{{ meeting.start|date:DATE_FORMAT.LONG }}</h1>
   </div>
 
   <div class="row">
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading">
+          <a href="{% url 'poll_tickets' meeting.id %}" class="pull-right" id="refreshTickets"
+             title="{% trans 'Refresh Tickets' %}">
+            <i class="glyphicon glyphicon-refresh"></i>
+          </a>
           <h3 class="panel-title">{% trans 'Tickets' %}</h3>
         </div>
         <div class="panel-body">
@@ -32,7 +34,7 @@
                      id="addTicketInput" name="id" autocomplete="off" />
               <input type="hidden" name="meeting" value="{{ meeting.id }}" />
               <span class="input-group-btn">
-                <button class="btn btn-default" type="submit">
+                <button class="btn btn-default" type="submit" title="{% trans 'Add Ticket' %}">
                   <i class="glyphicon glyphicon-plus"></i>
                 </button>
               </span>
@@ -56,8 +58,25 @@
         <div class="panel-heading">
           <h3 class="panel-title">{% trans 'Users' %}</h3>
         </div>
-        <div id="users" class="panel-body" data-poll-url="{% url 'poll_users' meeting.id %}">
-          {% include 'censeo/snippets/users.html' with users=meeting.voters.all %}
+        <div class="panel-body">
+          <div id="users" data-poll-url="{% url 'poll_users' meeting.id %}">
+            {% include 'censeo/snippets/users.html' with users=meeting.voters.all %}
+          </div>
+          {% if user.is_superuser %}
+            <form action="{% url 'add_voter' %}" method="post" id="addVoter" class="add-voter-form">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="{% trans 'Add Voter' %}"
+                       id="addVoterInput" name="voter" autocomplete="off"
+                       data-search-url="{% url 'user_search' meeting.id %}" />
+                <input type="hidden" name="meeting" value="{{ meeting.id }}" />
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="submit" title="{% trans 'Add Voter' %}">
+                    <i class="glyphicon glyphicon-plus"></i>
+                  </button>
+                </span>
+              </div>
+            </form>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -69,11 +88,14 @@
   {% compressed_js 'meet' %}
   <script>
     (function () {
+      'use strict';
+
       var censeo = window.censeo || (window.censeo = {});
 
       censeo.defaultVotingHtml = '{% include 'censeo/snippets/voting_default.html' %}';
       censeo.ticketMaskDefinitions = {% autoescape off %}{{ TICKET_MASK_DEFINITIONS }}{% endautoescape %};
       censeo.ticketMask = '{{ TICKET_MASK }}';
+      censeo.confirmRemove = '{% trans 'Are you sure you want to remove this ticket?' %}';
     }());
   </script>
 {% endblock %}

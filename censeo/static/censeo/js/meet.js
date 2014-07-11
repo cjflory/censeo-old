@@ -17,9 +17,11 @@
 
   $(function () {
 
-    var // meetingId = $('#meetingId').data('meeting-id'),
-      $addTicketForm = $('#addTicket'),
-      $addTicketInput = $addTicketForm.find('#addTicketInput'),
+    var $addForms = $('#addTicket,#addVoter'),
+      $addVoterForm = $('#addVoter'),
+      $addTicketInput = $('#addTicketInput'),
+      $addVoterInput = $('#addVoterInput'),
+      $searchUserUrl = $addVoterInput.data('search-url'),
       $tickets = $('#tickets'),
       $voting = $('#voting'),
       $users = $('#users'),
@@ -27,13 +29,21 @@
       votePollUrl, // Gets set when a ticket is selected
       ticketPollUrl = $tickets.data('poll-url'),
       userPollUrl = $users.data('poll-url'),
-      pollInterval = 1000,
+      pollInterval = 1500,
       votePoller, ticketPoller, userPoller,
+      refreshTickets = function () {
+        $.get(ticketPollUrl, function (tickets) {
+          $tickets.html(tickets);
+        });
+      },
       startVotePolling = function () {
         var pollFunction = function () {
           $.get(votePollUrl, function (votes) {
             spinner.stop();
             $voting.html(votes);
+          }).fail(function () {
+            clearInterval(votePoller);
+            $('#refreshTickets').trigger('click');
           });
         };
 
@@ -46,27 +56,35 @@
       startTicketPolling = function () {
         // Prevent multiple pollers to get started
         clearInterval(ticketPoller);
-        ticketPoller = setInterval(function () {
-          $.get(ticketPollUrl, function (tickets) {
-            $tickets.html(tickets);
-          });
-        }, pollInterval);
+        ticketPoller = setInterval(refreshTickets, pollInterval);
       },
       startUserPolling = function () {
-        // Prevent multiple pollers to get started
-        clearInterval(userPoller);
-        userPoller = setInterval(function () {
+        var pollFunction = function () {
           $.get(userPollUrl, function (users) {
             $users.html(users);
           });
-        }, pollInterval);
+        };
+
+        // Call the poll function initially, then start polling
+        pollFunction();
+        // Prevent multiple pollers to get started
+        clearInterval(userPoller);
+        userPoller = setInterval(pollFunction, pollInterval);
       };
 
     // Restrict input to expected format
     $addTicketInput.mask(censeo.ticketMask);
 
+    // Click handler for manually refreshing tickets
+    $('#refreshTickets').on('click', function (event) {
+      event.preventDefault();
+
+      $tickets.find('a.btn-primary').trigger('click');
+      refreshTickets();
+    });
+
     // Click handler for ticket links
-    $tickets.on('click', '.ticket a', function (e) {
+    $tickets.on('click', '.select-ticket', function (e) {
       e.preventDefault();
       clearInterval(ticketPoller);
       clearInterval(votePoller);
@@ -94,27 +112,66 @@
       }
     });
 
-    // Click handler for #addTicket form
-    $addTicketForm.on('submit', function (e) {
+    // Click handler for removing tickets
+    $tickets.on('click', '.remove-ticket', function (e) {
       e.preventDefault();
 
-      $.post($addTicketForm.attr('action'), $addTicketForm.serialize(), function (result) {
-        $('.errors').remove();
+      var $this = $(this),
+        $parent = $this.parent();
+
+      if (confirm(censeo.confirmRemove)) {
+        $.post($this.attr('href'), function () {
+          $parent.slideUp(function () {
+            $parent.remove();
+          });
+        });
+      }
+    });
+
+    // Click handler for #addTicket & #addVoter forms
+    $addForms.on('submit', function (e) {
+      e.preventDefault();
+
+      var $form = $(this),
+        isTicketForm = $form.attr('id') === 'addTicket',
+        $listContainer = isTicketForm ? $tickets.find('.ticket-list') : $users.find('.user-list'),
+        $primaryInput = isTicketForm ? $addTicketInput : $addVoterInput;
+
+      $.post($form.attr('action'), $form.serialize(), function (result) {
+        $form.find('.errors').remove();
 
         if (result.errors) {
           // Sample result:  {"errors": {"id": ["Invalid ticket id"]}}
           var addError = function (text) {
-            $addTicketForm.append( $('<div>', {'class': 'errors', text: text}) );
+            $form.append( $('<div>', {'class': 'errors', text: text}) );
           };
 
           _.each(_.keys(result.errors), function (key) {
             _.each(result.errors[key], addError);
           });
         } else {
-          $tickets.find('.ticket-list').append(result);
-          $addTicketInput.val('').focus();
+          $listContainer.append(result);
+          $primaryInput.val('').focus();
         }
       });
+    });
+
+    // Autocomplete for #addVoterInput
+    $addVoterInput.autocomplete({
+      delay: 100,
+      minLength: 2,
+      autoFocus: true,
+      source: $searchUserUrl,
+      create: function(event, ui) {
+        // jQuery UI adds a span for accessibility, it messes up bootstrap styles :(
+        $(this).prev('.ui-helper-hidden-accessible').remove();
+      },
+      select: function(event, ui) {
+        if (ui.item) {
+          $(this).val(ui.item.value);
+          $addVoterForm.trigger('submit');
+        }
+      }
     });
 
     // Click handler for voting on a ticket

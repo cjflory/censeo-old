@@ -3,10 +3,12 @@ from __future__ import unicode_literals
 import os
 
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.core.management.base import NoArgsCommand
 from django.utils.translation import ugettext_lazy as _
+
+User = get_user_model()
 
 
 class Command(NoArgsCommand):
@@ -31,11 +33,16 @@ class Command(NoArgsCommand):
             self.add_initial_users()
             call_command('migrate', 'censeo')
 
-        divider = '================================================================='
+        divider = '==========================================================================='
         self.stdout.write(_(
-            "\n{}\n  {} initial user(s) added with temporary password "
-            "of '{}'\n  DON'T FORGET TO CHANGE THESE PASSWORDS!!!\n{}\n\n"
-        ).format(divider, len(self.users), self.default_password, divider))
+            "\n{}\n  The following users were added with a temporary password of '{}':"
+            "\n    {}\n\n  DON'T FORGET TO CHANGE THESE PASSWORDS!!!\n{}\n\n"
+        ).format(
+            divider,
+            self.default_password,
+            '\n    '.join([user['username'] for user in self.users]),
+            divider
+        ))
 
     def add_initial_users(self):
         for user_data in self.users:

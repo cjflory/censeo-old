@@ -82,6 +82,12 @@ PIPELINE_CSS = {
         ),
         'output_filename': 'css/base.min.css',
     },
+    'meet': {
+        'source_filenames': (
+            'censeo/libs/jquery.ui/css/jquery-ui-theme/jquery-ui-1.10.4.custom.css',
+        ),
+        'output_filename': 'css/meet.min.css',
+    },
 }
 PIPELINE_JS = {
     'base': {
@@ -98,17 +104,25 @@ PIPELINE_JS = {
     },
     'meet': {
         'source_filenames': (
+            'censeo/libs/jquery.ui/js/jquery-ui-1.10.4.custom.js',
             'censeo/js/meet.js',
         ),
         'output_filename': 'js/meet.min.js',
     }
 }
 
+# Test settings
+if 'test' in sys.argv:
+    INSTALLED_APPS += ('django_nose',)
+    TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+    NOSE_ARGS = ['--nocapture', '--with-coverage', '--cover-html', '--cover-erase',
+                 '--cover-branches', '--cover-package=censeo', '-e=settings.py']
+
 # Registration
 LOGIN_REDIRECT_URL = reverse_lazy('meet')
 ACCOUNT_ACTIVATION_DAYS = 3
 
-# Ticket Validation Settings
+# Ticket Settings
 TICKET_REGEX = r'LON-\d{4}'
 # The TICKET_MASK_* settings are used to configure the jQuery Masked Input Plugin
 # See http://digitalbush.com/projects/masked-input-plugin/#usage for more information
@@ -118,6 +132,7 @@ TICKET_MASK_DEFINITIONS = {
     'N': '[Nn]',
 }
 TICKET_MASK = 'LON-9999'
+TICKET_URL = '//jira2.cerner.corp/browse/{ticket_number}'
 
 if 'runserver' in sys.argv:
     EMAIL_PORT = 1025

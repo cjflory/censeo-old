@@ -1,0 +1,1 @@
+[{% for user in object_list %}{"id": "{{ user.username }}", "label": "{{ user.username }}{% if user.get_full_name %} ({{ user.get_full_name }}){% endif %}", "value": "{{ user.username }}"}{% if not forloop.last %}, {% endif %}{% endfor %}]

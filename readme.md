@@ -31,7 +31,7 @@ To setup Censeo for local development, run the following commands:
 
 1. This script will setup the virtual environment, clone the repository, and install the requirements:
 
-        curl https://raw.github.com/cjflory/censeo/master/setup_dev.sh | sh -s <PROJECT NAME>
+        curl https://raw.githubusercontent.com/cjflory/censeo/master/setup_dev.sh | sh -s <PROJECT NAME>
 
 1. Activate the virtual environment and navigate to the project root:
 
@@ -50,4 +50,4 @@ To setup Censeo for local development, run the following commands:
 
 ### TODO
 
-* Write tests
+* Add more tests

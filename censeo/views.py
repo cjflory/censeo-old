@@ -3,27 +3,34 @@ from __future__ import unicode_literals
 import json
 
 from django.contrib.auth import authenticate
+from django.contrib.auth import get_user_model
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
+from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.generic import CreateView
 from django.views.generic import DeleteView
 from django.views.generic import DetailView
 from django.views.generic import FormView
+from django.views.generic import ListView
 from django.views.generic import TemplateView
 
 from .forms import AddTicketForm
+from .forms import AddVoterForm
 from .mixins import AjaxRequiredMixin
 from .mixins import LoginRequiredMixin
 from .mixins import LoginRequiredNoRedirectMixin
 from .models import Meeting
 from .models import Ticket
 from .models import Vote
+
+User = get_user_model()
 
 
 class HomeView(TemplateView):
@@ -62,15 +69,73 @@ class BaseAjaxView(LoginRequiredNoRedirectMixin, AjaxRequiredMixin):
     pass
 
 
-class AddTicketView(BaseAjaxView, FormView):
+class UserSearchView(BaseAjaxView, ListView):
+    queryset = User.objects.filter(is_active=True)
+    template_name = 'censeo/snippets/user_autocomplete.txt'
+
+    def get_queryset(self):
+        queryset = super(UserSearchView, self).get_queryset()
+        meeting_id = self.kwargs['meeting_id']
+        term = self.request.GET.get('term')
+
+        # Filter the queryset by the search term & meeting id
+        queryset = queryset.filter(
+            Q(username__icontains=term) |
+            Q(first_name__icontains=term) |
+            Q(last_name__icontains=term) |
+            Q(email__icontains=term)
+        ).exclude(
+            Q(meetings_as_voter__id=meeting_id) |
+            Q(meetings_as_observer__id=meeting_id)
+        )
+
+        return queryset
+
+
+class BaseAjaxFormView(BaseAjaxView, FormView):
+
+    def form_invalid(self, form):
+        return HttpResponse(json.dumps({'errors': form.errors}), content_type="application/json")
+
+
+class AddTicketView(BaseAjaxFormView):
     form_class = AddTicketForm
     template_name = 'censeo/snippets/ticket.html'
 
     def form_valid(self, form):
-        return HttpResponse(render_to_string(self.template_name, {'ticket': form.save()}))
+        return HttpResponse(render_to_string(self.template_name, {
+            'ticket': form.save()
+        }, context_instance=RequestContext(self.request)))
 
-    def form_invalid(self, form):
-        return HttpResponse(json.dumps({'errors': form.errors}), content_type="application/json")
+
+class AddVoterView(BaseAjaxFormView):
+    form_class = AddVoterForm
+    template_name = 'censeo/snippets/voter.html'
+
+    def form_valid(self, form):
+        # Validation has already happened
+        voter = form.cleaned_data['voter']
+        meeting = form.cleaned_data['meeting']
+        meeting.voters.add(voter)
+        return HttpResponse(render_to_string(self.template_name, {
+            'voter': voter,
+            'meeting': meeting,
+        }, context_instance=RequestContext(self.request)))
+
+
+class RemoveTicketView(BaseAjaxView, DeleteView):
+    model = Ticket
+    pk_url_kwarg = 'ticket_id'
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return HttpResponseForbidden()
+
+        return super(RemoveTicketView, self).post(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        self.get_object().delete()
+        return HttpResponse(status=204)
 
 
 class BaseMeetingAjaxView(BaseAjaxView, DetailView):
@@ -87,6 +152,7 @@ class PollTicketsView(BaseMeetingAjaxView):
         context = super(PollTicketsView, self).get_context_data(**kwargs)
         context['tickets'] = context['meeting'].tickets.all()
         return context
+
 
 class PollUsersView(BaseMeetingAjaxView):
     template_name = 'censeo/snippets/users.html'
