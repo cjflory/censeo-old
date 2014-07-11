@@ -55,7 +55,7 @@ echo export SECRET_KEY=$SECRET_KEY >> $VIRTUAL_ENV/bin/postactivate
 echo unset PYTHONPATH >> $VIRTUAL_ENV/bin/postdeactivate
 echo unset DJANGO_SETTINGS_MODULE >> $VIRTUAL_ENV/bin/postdeactivate
 echo unset SECRET_KEY >> $VIRTUAL_ENV/bin/postdeactivate
-pip install -r requirements.txt
+pip install -r requirements/base.txt
 npm install
 
 echo ""

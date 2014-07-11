@@ -62,7 +62,7 @@ class Ticket(models.Model):
     end = models.DateTimeField(blank=True, null=True)
 
     def __unicode__(self):
-        return _('{}').format(self.id)
+        return '{}'.format(self.id)
 
     def is_voting_completed(self):
         return self.ticket_votes.count() == self.meeting.voters.count()
