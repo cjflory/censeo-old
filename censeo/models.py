@@ -2,12 +2,14 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from .managers import MeetingManager
 from .templatetags.censeo_tags import get_full_name_or_username
+
+User = get_user_model()
 
 
 class Constants(object):

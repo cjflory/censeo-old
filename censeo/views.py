@@ -3,9 +3,9 @@ from __future__ import unicode_literals
 import json
 
 from django.contrib.auth import authenticate
+from django.contrib.auth import get_user_model
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponse
@@ -29,6 +29,8 @@ from .mixins import LoginRequiredNoRedirectMixin
 from .models import Meeting
 from .models import Ticket
 from .models import Vote
+
+User = get_user_model()
 
 
 class HomeView(TemplateView):

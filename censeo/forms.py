@@ -5,11 +5,13 @@ import re
 
 from django import forms
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 
 from .models import Meeting
 from .models import Ticket
+
+User = get_user_model()
 
 
 class AddTicketForm(forms.ModelForm):
