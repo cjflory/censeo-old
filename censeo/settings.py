@@ -82,6 +82,12 @@ PIPELINE_CSS = {
         ),
         'output_filename': 'css/base.min.css',
     },
+    'meet': {
+        'source_filenames': (
+            'censeo/libs/jquery.ui/css/jquery-ui-theme/jquery-ui-1.10.4.custom.css',
+        ),
+        'output_filename': 'css/meet.min.css',
+    },
 }
 PIPELINE_JS = {
     'base': {
@@ -98,6 +104,7 @@ PIPELINE_JS = {
     },
     'meet': {
         'source_filenames': (
+            'censeo/libs/jquery.ui/js/jquery-ui-1.10.4.custom.js',
             'censeo/js/meet.js',
         ),
         'output_filename': 'js/meet.min.js',

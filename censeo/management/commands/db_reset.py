@@ -3,10 +3,12 @@ from __future__ import unicode_literals
 import os
 
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.core.management.base import NoArgsCommand
 from django.utils.translation import ugettext_lazy as _
+
+User = get_user_model()
 
 
 class Command(NoArgsCommand):
