@@ -30,8 +30,6 @@ from .models import Meeting
 from .models import Ticket
 from .models import Vote
 
-User = get_user_model()
-
 
 class HomeView(TemplateView):
     template_name = 'censeo/home.html'
@@ -70,7 +68,7 @@ class BaseAjaxView(LoginRequiredNoRedirectMixin, AjaxRequiredMixin):
 
 
 class UserSearchView(BaseAjaxView, ListView):
-    queryset = User.objects.filter(is_active=True)
+    queryset = get_user_model().objects.filter(is_active=True)
     template_name = 'censeo/snippets/user_autocomplete.txt'
 
     def get_queryset(self):

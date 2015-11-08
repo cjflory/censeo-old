@@ -11,13 +11,11 @@ from dateutil.relativedelta import relativedelta
 from .generators import generate_user
 from ..models import Meeting
 
-User = get_user_model()
-
 
 class TestMeetingManager(TestCase):
 
     def tearDown(self):
-        User.objects.all().delete()
+        get_user_model().objects.all().delete()
         Meeting.objects.all().delete()
 
     def test_get_current_meeting_none_exist(self):

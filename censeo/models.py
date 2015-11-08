@@ -2,14 +2,11 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from .managers import MeetingManager
 from .templatetags.censeo_tags import get_full_name_or_username
-
-User = get_user_model()
 
 
 class Constants(object):
@@ -36,8 +33,8 @@ class Constants(object):
 
 class Meeting(models.Model):
     notes = models.TextField(blank=True, null=True)
-    voters = models.ManyToManyField(User, related_name='meetings_as_voter', blank=True, null=True)
-    observers = models.ManyToManyField(User, related_name='meetings_as_observer', blank=True)
+    voters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='meetings_as_voter', blank=True, null=True)
+    observers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='meetings_as_observer', blank=True)
     start = models.DateTimeField(auto_now_add=True)
     end = models.DateTimeField(blank=True, null=True)
 
@@ -77,7 +74,7 @@ class Ticket(models.Model):
 
 class Vote(models.Model):
     created = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, related_name='user_votes')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_votes')
     ticket = models.ForeignKey(Ticket, related_name='ticket_votes')
     story_point = models.FloatField(choices=Constants.STORY_POINTS)
 

@@ -11,7 +11,6 @@ from ..forms import AddTicketForm
 from ..models import Meeting
 from ..views import MeetView
 
-User = get_user_model()
 HTTP_METHOD_NAMES = ['get', 'post', 'put', 'patch', 'delete']
 
 
@@ -19,13 +18,14 @@ class TestMeetView(SimpleTestCase):
 
     @classmethod
     def setUpClass(cls):
+        user_model = get_user_model()
         cls.url = reverse('meet')
         cls.username = 'testuser'
         cls.password = 'password'
         try:
-            cls.user = User.objects.get(username=cls.username)
-        except User.DoesNotExist:
-            cls.user = User.objects.create_user(cls.username, 'test@example.com', cls.password)
+            cls.user = user_model.objects.get(username=cls.username)
+        except user_model.DoesNotExist:
+            cls.user = user_model.objects.create_user(cls.username, 'test@example.com', cls.password)
         cls.meeting = Meeting.objects.get_current_meeting(cls.user)
 
     @classmethod

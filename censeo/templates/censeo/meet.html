@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
-{% load i18n compressed %}
+{% load i18n pipeline %}
 
 {% block title %}{% trans 'Meeting' %}{% endblock %}
 
 {% block css %}
   {{ block.super }}
-  {% compressed_css 'meet' %}
+  {% stylesheet 'meet' %}
 {% endblock %}
 
 {% block content %}
@@ -85,7 +85,7 @@
 
 {% block js %}
   {{ block.super }}
-  {% compressed_js 'meet' %}
+  {% javascript 'meet' %}
   <script>
     (function () {
       'use strict';

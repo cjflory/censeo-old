@@ -12,8 +12,6 @@ from .generators import generate_ticket
 from .generators import generate_user
 from .generators import generate_vote
 
-User = get_user_model()
-
 
 class TestBase(TestCase):
 

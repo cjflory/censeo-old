@@ -11,8 +11,6 @@ from django.utils.translation import ugettext_lazy as _
 from .models import Meeting
 from .models import Ticket
 
-User = get_user_model()
-
 
 class AddTicketForm(forms.ModelForm):
     class Meta:
@@ -30,7 +28,7 @@ class AddTicketForm(forms.ModelForm):
 
 class AddVoterForm(forms.Form):
     voter = forms.ModelChoiceField(
-        queryset=User.objects.filter(is_active=True),
+        queryset=get_user_model().objects.filter(is_active=True),
         to_field_name='username',
         error_messages={'invalid_choice': _('Invalid username')}
     )
