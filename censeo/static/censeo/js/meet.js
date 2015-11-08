@@ -197,7 +197,7 @@
     });
 
     // Click handler for voter to become an observer
-    $users.on('click', 'a.become-observer', function (event) {
+    $users.on('click', 'a.update-role', function (event) {
       event.preventDefault();
 
       $.post($(this).attr('href'));

@@ -1,15 +1,15 @@
 {% load i18n censeo_tags %}
 
 <ul class="simple-list user-list">
-  {% for voter in voters %}
-    {% include 'censeo/snippets/voter.html' %}
-  {% endfor %}
+  {% for voter in voters %}{% include 'censeo/snippets/voter.html' %}{% endfor %}
+
   {% for observer in observers %}
     <li class="user">
-      {% get_full_name_or_username observer %}
-      <span class="pull-right label label-info">
+      <a href="{% url 'update_role' meeting.id 'voter' %}" class="pull-right label label-info update-role"
+         title="Switch to Voter">
         <i class="glyphicon glyphicon-eye-open"></i>
-      </span>
+      </a>
+      {% get_full_name_or_username observer %}
     </li>
   {% endfor %}
 </ul>

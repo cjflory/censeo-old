@@ -10,7 +10,7 @@ from django.contrib import admin
 from .views import AddTicketView
 from .views import AddVoterView
 from .views import UserSearchView
-from .views import BecomeObserverView
+from .views import UpdateRoleView
 from .views import PollTicketsView
 from .views import GetTicketVotesView
 from .views import PollUsersView
@@ -43,8 +43,8 @@ urlpatterns = patterns('',
         RemoveTicketView.as_view(), name='remove_ticket'),
     url(r'^ticket/add$', AddTicketView.as_view(), name='add_ticket'),
 
-    url(r'^meeting/(?P<meeting_id>\d+)/become-observer$', BecomeObserverView.as_view(),
-        name='become_observer'),
+    url(r'^meeting/(?P<meeting_id>\d+)/update-role/(?P<role>(observer|voter))$', UpdateRoleView.as_view(),
+        name='update_role'),
     url(r'^meeting/(?P<meeting_id>\d+)/tickets$', PollTicketsView.as_view(), name='poll_tickets'),
     url(r'^meeting/(?P<meeting_id>\d+)/users$', PollUsersView.as_view(), name='poll_users'),
     url(r'^meeting/(?P<meeting_id>\d+)/users/search$', UserSearchView.as_view(),

@@ -162,15 +162,15 @@ class PollUsersView(BaseMeetingAjaxView):
         return context
 
 
-class BecomeObserverView(BaseMeetingAjaxView):
+class UpdateRoleView(BaseMeetingAjaxView):
     """ View to switch the user from a voter to an observer in the meeting """
     http_method_names = ['post']
 
     def post(self, *args, **kwargs):
         meeting = self.get_object()
-        meeting.voters.remove(self.request.user)
-        meeting.observers.add(self.request.user)
-
+        observing = kwargs.get('role', 'observer') == 'observer'
+        getattr(meeting, 'voters' if observing else 'observers').remove(self.request.user)
+        getattr(meeting, 'observers' if observing else 'voters').add(self.request.user)
         return HttpResponse(status=204)
 
 
