@@ -33,7 +33,7 @@ class Constants(object):
 
 class Meeting(models.Model):
     notes = models.TextField(blank=True, null=True)
-    voters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='meetings_as_voter', blank=True, null=True)
+    voters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='meetings_as_voter', blank=True)
     observers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='meetings_as_observer', blank=True)
     start = models.DateTimeField(auto_now_add=True)
     end = models.DateTimeField(blank=True, null=True)
