@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from datetime import date
+from __future__ import unicode_literals
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from django.utils import timezone
-
-from dateutil.relativedelta import relativedelta
 
 from .generators import generate_user
 from ..models import Meeting

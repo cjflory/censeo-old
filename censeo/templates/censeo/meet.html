@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load i18n pipeline %}
+{% load i18n censeo_tags pipeline %}
 
 {% block title %}{% trans 'Meeting' %}{% endblock %}
 
@@ -97,8 +97,8 @@
       var censeo = window.censeo || (window.censeo = {});
 
       censeo.defaultVotingHtml = '{% include 'censeo/snippets/voting_default.html' %}';
-      censeo.ticketMaskDefinitions = {% autoescape off %}{{ TICKET_MASK_DEFINITIONS }}{% endautoescape %};
-      censeo.ticketMask = '{{ TICKET_MASK }}';
+      censeo.ticketMaskDefinitions = {{ TICKET_MASK_DEFINITIONS|jsonify }};
+      censeo.ticketMask = {{ TICKET_MASK|jsonify }};
       censeo.confirmRemove = '{% trans 'Are you sure you want to remove this ticket?' %}';
     }());
   </script>

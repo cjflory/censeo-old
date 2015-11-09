@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from urlparse import urlparse
 
 from django.contrib.auth import get_user_model
@@ -9,7 +10,6 @@ from django.test import SimpleTestCase
 
 from ..forms import AddTicketForm
 from ..models import Meeting
-from ..views import MeetView
 
 HTTP_METHOD_NAMES = ['get', 'post', 'put', 'patch', 'delete']
 
