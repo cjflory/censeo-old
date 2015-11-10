@@ -1,9 +1,9 @@
 {
   "name": "Censeo",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "dependencies": {
-    "less": "1.5.x",
+    "less": "2.5.x",
     "yuglify": "0.1.x"
   }
 }

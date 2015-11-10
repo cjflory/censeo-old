@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
 import os
@@ -7,8 +8,6 @@ from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.core.management.base import NoArgsCommand
 from django.utils.translation import ugettext_lazy as _
-
-User = get_user_model()
 
 
 class Command(NoArgsCommand):
@@ -29,9 +28,8 @@ class Command(NoArgsCommand):
                 self.stdout.write(_('Deleted the SQLite database'))
 
             # Setup the new database
-            call_command('syncdb', interactive=False)
+            call_command('migrate', interactive=False)
             self.add_initial_users()
-            call_command('migrate', 'censeo')
 
         divider = '==========================================================================='
         self.stdout.write(_(
@@ -46,8 +44,8 @@ class Command(NoArgsCommand):
 
     def add_initial_users(self):
         for user_data in self.users:
-            user = User.objects.create_user(user_data['username'], user_data['email'],
-                                            self.default_password)
+            user = get_user_model().objects.create_user(user_data['username'], user_data['email'],
+                                                        self.default_password)
             user.is_superuser = user_data['superuser']
             user.is_staff = user_data['staff']
             user.first_name = user_data['firstname']

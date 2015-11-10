@@ -1,4 +1,4 @@
-{% load admin_urls i18n compressed %}
+{% load admin_urls i18n pipeline %}
 {% url 'home' as home_url %}
 {% url 'meet' as meet_url %}
 
@@ -13,7 +13,7 @@
   <title>{% trans 'Censeo' %} {% block title %}{% endblock %}</title>
 
   <link rel="shortcut icon" href="{{ STATIC_URL }}censeo/img/favicon.ico" />
-  {% compressed_css 'base' %}
+  {% stylesheet 'base' %}
   {% block css %}{% endblock %}
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -64,7 +64,7 @@
             {% if user.is_staff %}
               <li><a href="{% url 'admin:index' %}">{% trans 'Admin' %}</a></li>
             {% endif %}
-            <li><a href="{% url 'logout' %}">{% trans 'Logout' %}</a></li>
+            <li><a href="{% url 'logout' %}?next={% url 'home' %}">{% trans 'Logout' %}</a></li>
           {% else %}
             <li><a href="{% url 'login' %}">{% trans 'Login' %}</a></li>
             <li><a href="{% url 'register_new_user' %}">{% trans 'Sign Up' %}</a></li>
@@ -85,7 +85,7 @@
       '<script src="{{ STATIC_URL }}censeo/libs/jQuery/jquery.min.js"><\/script>'
     );
   </script>
-  {% compressed_js 'base' %}
+  {% javascript 'base' %}
   {% block js %}{% endblock %}
 
 </body>

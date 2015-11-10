@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from django import forms
+from __future__ import unicode_literals
+
 from django.test import TestCase
-from django.utils.translation import ugettext_lazy as _
 
 from .generators import generate_meeting
 from ..forms import AddTicketForm

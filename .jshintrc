@@ -10,10 +10,10 @@
 
   // Custom globals.
   "predef"        : [
-    "Backbone",
-    "Spinner",
     "_",
-    "censeo"
+    "Backbone",
+    "censeo",
+    "Spinner"
   ],
 
   // Development.

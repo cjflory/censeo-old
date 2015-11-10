@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
-{% load i18n compressed %}
+{% load i18n censeo_tags pipeline %}
 
 {% block title %}{% trans 'Meeting' %}{% endblock %}
 
 {% block css %}
   {{ block.super }}
-  {% compressed_css 'meet' %}
+  {% stylesheet 'meet' %}
 {% endblock %}
 
 {% block content %}
@@ -14,6 +14,7 @@
   </div>
 
   <div class="row">
+
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -43,6 +44,7 @@
         </div>
       </div>
     </div>
+
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -53,6 +55,7 @@
         </div>
       </div>
     </div>
+
     <div class="col-md-4">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -80,12 +83,13 @@
         </div>
       </div>
     </div>
+
   </div>
 {% endblock %}
 
 {% block js %}
   {{ block.super }}
-  {% compressed_js 'meet' %}
+  {% javascript 'meet' %}
   <script>
     (function () {
       'use strict';
@@ -93,8 +97,8 @@
       var censeo = window.censeo || (window.censeo = {});
 
       censeo.defaultVotingHtml = '{% include 'censeo/snippets/voting_default.html' %}';
-      censeo.ticketMaskDefinitions = {% autoescape off %}{{ TICKET_MASK_DEFINITIONS }}{% endautoescape %};
-      censeo.ticketMask = '{{ TICKET_MASK }}';
+      censeo.ticketMaskDefinitions = {{ TICKET_MASK_DEFINITIONS|jsonify }};
+      censeo.ticketMask = {{ TICKET_MASK|jsonify }};
       censeo.confirmRemove = '{% trans 'Are you sure you want to remove this ticket?' %}';
     }());
   </script>

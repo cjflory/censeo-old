@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
 import json
@@ -29,8 +30,6 @@ from .mixins import LoginRequiredNoRedirectMixin
 from .models import Meeting
 from .models import Ticket
 from .models import Vote
-
-User = get_user_model()
 
 
 class HomeView(TemplateView):
@@ -70,7 +69,7 @@ class BaseAjaxView(LoginRequiredNoRedirectMixin, AjaxRequiredMixin):
 
 
 class UserSearchView(BaseAjaxView, ListView):
-    queryset = User.objects.filter(is_active=True)
+    queryset = get_user_model().objects.filter(is_active=True)
     template_name = 'censeo/snippets/user_autocomplete.txt'
 
     def get_queryset(self):
@@ -164,15 +163,15 @@ class PollUsersView(BaseMeetingAjaxView):
         return context
 
 
-class BecomeObserverView(BaseMeetingAjaxView):
+class UpdateRoleView(BaseMeetingAjaxView):
     """ View to switch the user from a voter to an observer in the meeting """
     http_method_names = ['post']
 
     def post(self, *args, **kwargs):
         meeting = self.get_object()
-        meeting.voters.remove(self.request.user)
-        meeting.observers.add(self.request.user)
-
+        observing = kwargs.get('role', 'observer') == 'observer'
+        getattr(meeting, 'voters' if observing else 'observers').remove(self.request.user)
+        getattr(meeting, 'observers' if observing else 'voters').add(self.request.user)
         return HttpResponse(status=204)
 
 

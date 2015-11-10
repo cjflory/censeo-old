@@ -2,8 +2,7 @@
 
 <li class="user">
   {% if user == voter %}
-    <a href="{% url 'become_observer' meeting.id %}"
-       class="pull-right become-observer">
+    <a href="{% url 'update_role' meeting.id 'observer' %}" class="pull-right update-role" title="Switch to Observer">
       {% trans 'Just observing?' %}
     </a>
   {% endif %}

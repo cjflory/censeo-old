@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 import random
 import string
 
@@ -9,8 +10,6 @@ from ..models import Constants
 from ..models import Meeting
 from ..models import Ticket
 from ..models import Vote
-
-User = get_user_model()
 
 
 def generate_string(size=6, chars=string.ascii_uppercase + string.digits):
@@ -28,7 +27,7 @@ def generate_user(**kwargs):
         'password': generate_string()
     }
     user_kwargs.update(kwargs)
-    return User.objects.create_user(
+    return get_user_model().objects.create_user(
         username=user_kwargs.pop('username'),
         email=user_kwargs.pop('email'),
         password=user_kwargs.pop('password'),
